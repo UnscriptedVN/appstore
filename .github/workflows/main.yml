@@ -1,0 +1,14 @@
+name: Mirror to Goucher
+
+on: ["push"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Automatic Repository Mirror
+        uses: vafleite/repository-mirroring-action@1.2
+        with:
+          target_repo_url: "https://github.com/GoucherCollegeCS417Spring2021/wsgi-candella-appdb.git"
