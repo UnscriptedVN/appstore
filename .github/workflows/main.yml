@@ -16,3 +16,5 @@ jobs:
           mirrorBranch: master
           # Base64 encoded Personal Access Token
           pat: ${{ secrets.GH_TOKEN }}
+          verbose: true
+          force: true
