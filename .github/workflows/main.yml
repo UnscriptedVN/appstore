@@ -13,7 +13,7 @@ jobs:
           originalURL: "https://github.com/UnscriptedVN/appstore.git"
           mirrorURL: "https://GoucherCollegeCS417Spring2021/wsgi-candella-appdb.git"
           originalBranch: root
-          mirrorBranch: master
+          mirrorBranch: root
           # Base64 encoded Personal Access Token
           pat: ${{ secrets.GH_TOKEN }}
           verbose: true
