@@ -7,8 +7,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Automatic Repository Mirror
-        uses: vafleite/repository-mirroring-action@1.2
+      - name: git-mirror-action
+        uses: mathisve/git-mirror-action@v1.1
         with:
-          target_repo_url: "https://github.com/GoucherCollegeCS417Spring2021/wsgi-candella-appdb.git"
+          originalURL: "https://github.com/UnscriptedVN/appstore.git"
+          mirrorURL: "https://GoucherCollegeCS417Spring2021/wsgi-candella-appdb.git"
+          # Base64 encoded Personal Access Token
+          pat: ${{ secrets.GH_TOKEN }}
