@@ -11,7 +11,7 @@ jobs:
         uses: mathisve/git-mirror-action@v1.1
         with:
           originalURL: "https://github.com/UnscriptedVN/appstore.git"
-          mirrorURL: "https://GoucherCollegeCS417Spring2021/wsgi-candella-appdb.git"
+          mirrorURL: "https://github.com/GoucherCollegeCS417Spring2021/wsgi-candella-appdb.git"
           originalBranch: root
           mirrorBranch: root
           # Base64 encoded Personal Access Token
