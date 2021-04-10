@@ -1,0 +1,62 @@
+<div class="cc-header">
+    <div class="row">
+        <p>
+            <a class="p-link--inverted" href="https://candella.unscriptedvn.dev">CANDELLA</a>
+        </p>
+    </div>
+</div>
+<header id="navigation" class="p-navigation is-dark">
+    <div class="p-navigation__row">
+        <div class="p-navigation__banner">
+            <div class="p-navigation__logo">
+                <a class="p-navigation__item" href="{{ url_for('index') }}">
+                    <img class="p-navigation__image" src="https://candella.unscriptedvn.dev/img/logomark-dark.svg"
+                        alt="AppDB" width="95">
+                </a>
+            </div>
+            <a href="#navigation" class="p-navigation__toggle--open" title="menu">Menu</a>
+            <a href="#navigation-closed" class="p-navigation__toggle--close" title="close menu">Close menu</a>
+        </div>
+        <nav class="p-navigation__nav" aria-label="Example main navigation">
+            <span class="u-off-screen">
+                <a href="#main-content">Jump to main content</a>
+            </span>
+            <ul class="p-navigation__items" style="order:0;">
+                <li class="p-navigation__item is-selected">
+                    <a class="p-navigation__link" href="{{ url_for('prod_apps') }}">Apps</a>
+                </li>
+                <li class="p-navigation__item">
+                    <a class="p-navigation__link" href="{{ url_for('prod_lists') }}">Lists</a>
+                </li>
+            </ul>
+            <form class="p-search-box" action="{{ url_for('prod_search') }}" method="get" style="order:1;">
+                <input class="p-search-box__input" type="text" placeholder="Search..." name="query" autocomplete="off"
+                    required="">
+                <button type="reset" class="p-search-box__reset"><i class="p-icon--close"></i></button>
+                <button type="submit" class="p-search-box__button"><i class="p-icon--search"></i></button>
+            </form>
+            <ul class="p-navigation__items" style="order:2;">
+                <li class="p-navigation__item p-subnav" id="link-4">
+                    <a class="p-subnav__toggle p-navigation__link" aria-controls="account-menu">
+                        <i class="p-icon--user"></i>
+                        My account
+                    </a>
+                    <ul class="p-subnav__items--right" id="account-menu" aria-hidden="true">
+                        <li>
+                            <a href="{{ url_for('dev_dashboard') }}" class="p-subnav__item">My projects</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('cur_dashboard') }}" class="p-subnav__item">Curator dashboard</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('auth_login') }}'" class="p-subnav__item">Log in</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('auth_logout') }}'" class="p-subnav__item">Sign out</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>

@@ -1,0 +1,19 @@
+<footer>
+    <div class="p-strip p-strip--light is-shallow">
+        <div class="row">
+            <p>&copy; <span id="appdb-f-date"></span> Candella project team.</p>
+            <p>
+                <a class="p-link--external" href="https://github.com/UnscriptedVN/appstore">View the source</a>
+                <a class="p-link--external" href="https://discord.gg/CXxnVhX">Contact us</a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const changeFooterDate = () => {
+        document.getElementById("appdb-f-date").textContent
+            = `${new Date().getFullYear() != 2021 ? "2021 - " : ""}${new Date().getFullYear()}`;
+    }
+    changeFooterDate();
+</script>
