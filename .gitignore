@@ -1,0 +1,14 @@
+# Ignore Python-specific compiled files.
+**/__pycache__/
+**.pyc
+**.egg-info
+**.wheel
+
+# Ignore data-sensitive environment files.
+.env
+
+# IDE-based files
+.vscode/
+
+# Filesystem hidden files
+.DS_Store

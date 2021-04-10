@@ -3,10 +3,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[scripts]
+dev = "flask run"
+
 [packages]
 flask = "*"
 psycopg2-binary = "*"
 passlib = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
