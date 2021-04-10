@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-7">
             <p class="cc-jumbotron small-header"><small>Featured project</small></p>
-            <h2 class="project-title">{{ project.title }}</h2>
+            <h2 class="project-title">{{ project.name }}</h2>
             <p>{{ project.description }}</p>
             <p>
                 <a class="p-button--positive" href="{{ url_for('project_detail', project_id=project.id) }}">Get</a>
