@@ -13,3 +13,13 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/. */
   margin: 1px 0;
   padding: 0;
 }
+
+.cc-jumbotron .small-header {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.cc-jumbotron .project-title {
+  margin-top: 0;
+  padding-top: 0 !important;
+}

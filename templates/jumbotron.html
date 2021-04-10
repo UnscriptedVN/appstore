@@ -1,0 +1,27 @@
+{#
+    Featured Project Jumbotron Template
+    (C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#}
+<div class="p-strip p-strip--suru cc-jumbotron" id="featured-project">
+    <div class="row">
+        <div class="col-7">
+            <p class="cc-jumbotron small-header"><small>Featured project</small></p>
+            <h2 class="project-title">{{ project.title }}</h2>
+            <p>{{ project.description }}</p>
+            <p>
+                <a class="p-button--positive" href="{{ url_for('project_detail', project_id=project.id) }}">Get</a>
+            </p>
+        </div>
+        <div class="col-5">
+            {% if project.screenshots %}
+            <img src="{{ project.screenshots[0] }}" alt="Featured project image">
+            {% else %}
+            <img src="{{ project.icon }}" alt="Featured project icon">
+            {% endif %}
+        </div>
+    </div>
+</div>
