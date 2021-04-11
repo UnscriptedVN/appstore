@@ -1,0 +1,28 @@
+{#
+    Project List Template
+    (C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#}
+{% include "imports.html" %}
+<div class="p-strip is-shallow">
+    <div class="cc-project-list row" id="project-list-entry__id-{{ project.id }}">
+        <img class="cc-project-list__icon"
+            src="{{ project.id }}"
+            alt="{{ project.name }} icon">
+        <div class="cc-project-list__info">
+            <p class="cc-project-list__title p-heading--3">{{ project.name }}</p>
+            <p class="cc-project-list__id p-heading--5 u-text--muted">{{ project.id }}</p>
+            <p class="cc-project-list__revision">Latest revision: {{ project.latest_version }}</p>
+        </div>
+        <div class="cc-project-list__actions">
+            {% if action == "review" %}
+            <p><a class="p-button" href="{{ url_for('cur_inspect_project', id=project.id) }}">Review</a></p>
+            {% else %}
+            <p><a class="p-button" href="{{ url_for('dev_edit_project', id=project.id) }}">Manage</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>

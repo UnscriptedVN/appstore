@@ -1,7 +1,13 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+/* 
+  Candella AppDB Additional Styling
+  (C) 2021 Marquis Kurt, Nodar Sotkilava, and UnscriptedVN Team.
+  
+  This Source Code Form is subject to the terms of the Mozilla Public
+  License, v. 2.0. If a copy of the MPL was not distributed with this
+  file, You can obtain one at https://mozilla.org/MPL/2.0/. 
+*/
 
+/* MARK: "Canonical" Global Header */
 .cc-header {
   background-color: #212121;
   color: #f4f4f4;
@@ -14,6 +20,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/. */
   padding: 0;
 }
 
+/* MARK: Jumbotron */
 .cc-jumbotron .small-header {
   margin-bottom: 0;
   padding-bottom: 0;
@@ -24,6 +31,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/. */
   padding-top: 0 !important;
 }
 
+/* MARK: Project Card */
 .cc-project-card {
   box-shadow: 0 1px 1px 0 #00000026, 0 2px 2px -1px #00000026,
     0 0 3px 0 #00000026;
@@ -57,4 +65,44 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 .cc-project-card__licensing span:first-child {
   flex-grow: 1;
+}
+
+/* MARK: Project List */
+.cc-project-list {
+  display: flex;
+  flex-direction: row;
+}
+
+.cc-project-list__icon {
+  width: 128px;
+  height: 128px;
+  clip-path: url("../img/app_mask.svg");
+}
+
+.cc-project-list__info {
+  flex-grow: 1;
+  padding-left: 1rem;
+}
+
+.cc-project-list__info .cc-project-list__title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.cc-project-list__info .cc-project-list__id {
+  font-weight: 300;
+}
+
+@media (max-width: 620px) {
+  .cc-project-list {
+    flex-direction: column;
+  }
+
+  .cc-project-list__info {
+    padding-left: initial;
+  }
+
+  .cc-project-list__icon {
+    display: none;
+  }
 }
