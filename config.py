@@ -10,6 +10,8 @@ load_dotenv(".env")
 # PostgreSQL environment variables
 PSQL_USER = getenv("PSQL_USER")
 PSQL_PWD = getenv("PSQL_PWD")
+PSQL_DB = getenv("PSQL_DB")
+PSQL_HOST = getenv("PSQL_HOST")
 
 # GitHub API variables
 GH_CLIENT_ID = getenv("GH_CLIENT_ID")
