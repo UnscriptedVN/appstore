@@ -18,4 +18,4 @@ delete from License;
 
 
 insert into License values ('3', 'This is some random license');
-insert into Project values ('dev-unscriptedvn-candella-caberto-shell', '2', 'Celeste Shell','1.0.0','A desktop shell for Candella, inspired by Lomiri.', '3');
+insert into Project values ('dev.unscriptedvn.candella.celeste-shell', '2', 'Celeste Shell','1.0.0','A desktop shell for Candella, inspired by Lomiri.', '3');
