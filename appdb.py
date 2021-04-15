@@ -1,3 +1,6 @@
+# appdb.py
+# (C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -41,12 +44,12 @@ except(Exception, psycopg2.DatabaseError) as error:
 #Returns 404 if something goes wrong
 @app.errorhandler(404)
 def page_not_found(e):
-    return "404"
+    return render_template("404.html"), 404
 
 #Returns OK if connected
 @app.route("/")
 def connect():
-    return "200"
+    return "200", 200
 
 #SELECT all the projects from Project
 @app.route("/api/v1/projects/all", methods = ['GET'])
@@ -72,6 +75,7 @@ def get_project():
     query = 'SELECT * FROM Project WHERE'
     to_filter = []
 
+    #This is fucky wucky rewrite
     if projectId:
         query+= ' projectId=%s AND'
         to_filter.append(psycopg2.extensions.adapt(projectId))
