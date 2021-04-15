@@ -6,10 +6,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 from flask import Flask, render_template, json, session, request, jsonify
-import psycopg2
-import psycopg2.extras
+import psycopg2 as psql
+import psycopg2.extras as psql_extras
 import sys
-import psycopg2.extensions
+import psycopg2.extensions as psql_ext
+from . import utils
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
@@ -17,26 +18,9 @@ app.config['DEBUG'] = True
 
 #Establish connection to the DB
 conn = None
-cur = None
 try:
-        
-        print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect( host = app.config['PSQL_HOST'], database = app.config['PSQL_DB'], 
-                    user = app.config['PSQL_USER'], password = app.config['PSQL_PWD'])
-        
-        
-        cur = conn.cursor()
-
-        print('PostgreSQL database version:', file = sys.stderr)
-        cur.execute("SELECT version()")
-
-        db_version = cur.fetchone()
-        
-        print(db_version, file = sys.stderr)
-
-        cur.close()
-        
-except(Exception, psycopg2.DatabaseError) as error:
+    conn = utils.load_database(app.config)
+except psql.DatabaseError as error:
     print(error, file = sys.stderr)
 
 # TODO: Add routes here
@@ -54,10 +38,9 @@ def connect():
 #SELECT all the projects from Project
 @app.route("/api/v1/projects/all", methods = ['GET'])
 def get_projects():
-    cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
-    cur.execute('SELECT * FROM Project')
-    all_projects = cur.fetchall()
-    cur.close()
+    with utils.DatabaseContext(conn, cursor_factory=psql_extras.RealDictCursor) as cur:
+        cur.execute('SELECT * FROM Project')
+        all_projects = cur.fetchall()
     return(jsonify(all_projects))
 
 #SELECTs a specific project based on the parameters passed
@@ -78,7 +61,7 @@ def get_project():
     #This is fucky wucky rewrite
     if projectId:
         query+= ' projectId=%s AND'
-        to_filter.append(psycopg2.extensions.adapt(projectId))
+        to_filter.append(psql_ext.adapt(projectId))
     if type:
         query+= ' type=%s AND'
         to_filter.append(type)
@@ -98,14 +81,9 @@ def get_project():
         return page_not_found(404)
     query = query[:-4]
 
-    cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
-
-    cur.execute(query, to_filter)
-
-    results = cur.fetchall()
-
-    cur.close()
-
+    with utils.DatabaseContext(conn, cursor_factory=psql_extras.RealDictCursor) as cur:
+        cur.execute(query, to_filter)
+        results = cur.fetchall()
     return (jsonify(results))
 
 if __name__ != "__main__":
