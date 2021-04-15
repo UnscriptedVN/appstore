@@ -10,8 +10,8 @@ create table UserAccount(
 );
 
 create table Developer (
-    userId serial unique, 
-    githubId text unique, 
+    userId serial unique,
+    githubId text unique,
     primary key (userId, githubId),
     foreign key (userId) references Account
 );
@@ -28,7 +28,7 @@ create table License(
 );
 
 create table Project(
-    projectId text primary key, --check (projectId like '^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$'), removed because check does not function. Double check.
+    projectId text primary key check (projectId similar to '[a-z]{2,}\.([a-z0-9]+(-[a-z0-9]+)*\.)+([a-z0-9\-]+)'),
     type integer,
     name text,
     version text,
@@ -72,7 +72,7 @@ create table List(
     name text,
     blurb text,
     curatorId serial,
-    foreign key (curatorId) references Curator 
+    foreign key (curatorId) references Curator
 );
 
 create table Includes(
