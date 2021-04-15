@@ -17,9 +17,9 @@ app.config.from_pyfile("config.py")
 app.config['DEBUG'] = True
 
 #Establish connection to the DB
-conn = None
+APPDB_CONNECTION = None
 try:
-    conn = ro.utils.load_database(app.config)
+    APPDB_CONNECTION = ro.utils.load_database(app.config)
 except psql.DatabaseError as error:
     print(error, file = sys.stderr)
 
@@ -36,52 +36,25 @@ def connect():
     return "200", 200
 
 #SELECT all the projects from Project
+# NOTE: This endpoint should probably be changed to just "/api/v1/projects".
 @app.route("/api/v1/projects/all", methods = ['GET'])
-def get_projects():
-    return jsonify(ro.projects.get_projects(conn))
+def projects():
+    return jsonify(ro.projects.get_projects(APPDB_CONNECTION))
+
+@app.route("/api/v1/project/<string:id>")
+def single_project(id: str):
+    return jsonify(ro.projects.get_project(APPDB_CONNECTION, id))
+
+@app.route("/api/v1/search")
+def search_database():
+    return ro.search.search(APPDB_CONNECTION)
 
 #SELECTs a specific project based on the parameters passed
+# NOTE: This endpoint should probably be removed or integrated into a general search API
+# call.
 @app.route("/api/v1/projects", methods = ['GET'])
 def get_project():
-    query_parameters = request.args
-
-    projectId = query_parameters.get('projectId')
-    type = query_parameters.get('type')
-    name = query_parameters.get('name')
-    version = query_parameters.get('version')
-    description = query_parameters.get('description')
-    licenseId = query_parameters.get('licenseId')
-
-    query = 'SELECT * FROM Project WHERE'
-    to_filter = []
-
-    #This is fucky wucky rewrite
-    if projectId:
-        query+= ' projectId=%s AND'
-        to_filter.append(psql_ext.adapt(projectId))
-    if type:
-        query+= ' type=%s AND'
-        to_filter.append(type)
-    if name:
-        query+= ' name=%s AND'
-        to_filter.append(name)
-    if version:
-        query+= ' version=%s AND'
-        to_filter.append(version)
-    if description:
-        query+= ' description=%s AND'
-        to_filter.append(description)
-    if licenseId:
-        query+= ' licenseId=%s AND'
-        to_filter.append(licenseId)
-    if not(projectId or type or name or version or description or licenseId):
-        return page_not_found(404)
-    query = query[:-4]
-
-    with utils.DatabaseContext(conn, cursor_factory=psql_extras.RealDictCursor) as cur:
-        cur.execute(query, to_filter)
-        results = cur.fetchall()
-    return (jsonify(results))
+    return jsonify(ro.projects.get_projects(APPDB_CONNECTION))
 
 if __name__ != "__main__":
     application = app

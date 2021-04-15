@@ -5,7 +5,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-from functools import wraps
 import psycopg2 as psql
 
 class DatabaseContext():
@@ -49,7 +48,7 @@ def load_database(with_app_config: dict):
     database = psql.connect(host=with_app_config['PSQL_HOST'], database=with_app_config['PSQL_DB'],
                             user=with_app_config['PSQL_USER'], password=with_app_config['PSQL_PWD'])
 
-    if with_app_config['FLASK_ENV'] == "development":
+    if with_app_config['DEBUG']:
         with DatabaseContext(database) as ctx:
             ctx.execute("SELECT version()")
             print(f"PSQL Version: {ctx.fetchone()}")
