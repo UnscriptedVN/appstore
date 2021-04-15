@@ -5,25 +5,50 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-from flask import Flask, render_template, json, session, request, jsonify
-import psycopg2 as psql
-import psycopg2.extras as psql_extras
-import sys
-import psycopg2.extensions as psql_ext
+from flask import Flask, render_template, jsonify
 from . import roland as ro
+import sys
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
 app.config['DEBUG'] = True
 
-#Establish connection to the DB
 APPDB_CONNECTION = None
+
 try:
     APPDB_CONNECTION = ro.utils.load_database(app.config)
-except psql.DatabaseError as error:
-    print(error, file = sys.stderr)
+except Exception as error:
+    print(error, file=sys.stderr)
 
-# TODO: Add routes here
+###########################################
+# MARK: API ENDPOINTS                     #
+###########################################
+# TODO: Determine if it's possible to move these to their own files...
+
+@app.route("/api/v1/projects/<string:id>")
+def api_single_project(id: str):
+    project = ro.projects.get_project(APPDB_CONNECTION, id)
+    if not project:
+        return jsonify({"error": "Record not found"}), 404
+    return jsonify(project)
+
+@app.route("/api/v1/projects/<string:id>/releases")
+def api_project_releases(id: str):
+    project = ro.projects.get_project(APPDB_CONNECTION, id)
+    if not project:
+        return jsonify({"error": "Record not found"}), 404
+    
+    releases = ro.projects.get_releases(APPDB_CONNECTION, id)
+    return jsonify(releases)
+
+@app.route("/api/v1/projects", methods=['GET'])
+def api_get_project():
+    return jsonify(ro.projects.list_projects(APPDB_CONNECTION))
+
+@app.route("/api/v1/search")
+def api_search_database():
+    return ro.search.search(APPDB_CONNECTION)
+
 
 #Returns 404 if something goes wrong
 @app.errorhandler(404)
@@ -34,27 +59,6 @@ def page_not_found(e):
 @app.route("/")
 def connect():
     return "200", 200
-
-#SELECT all the projects from Project
-# NOTE: This endpoint should probably be changed to just "/api/v1/projects".
-@app.route("/api/v1/projects/all", methods = ['GET'])
-def projects():
-    return jsonify(ro.projects.get_projects(APPDB_CONNECTION))
-
-@app.route("/api/v1/project/<string:id>")
-def single_project(id: str):
-    return jsonify(ro.projects.get_project(APPDB_CONNECTION, id))
-
-@app.route("/api/v1/search")
-def search_database():
-    return ro.search.search(APPDB_CONNECTION)
-
-#SELECTs a specific project based on the parameters passed
-# NOTE: This endpoint should probably be removed or integrated into a general search API
-# call.
-@app.route("/api/v1/projects", methods = ['GET'])
-def get_project():
-    return jsonify(ro.projects.get_projects(APPDB_CONNECTION))
 
 if __name__ != "__main__":
     application = app
