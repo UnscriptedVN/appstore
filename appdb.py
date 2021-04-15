@@ -10,7 +10,7 @@ import psycopg2 as psql
 import psycopg2.extras as psql_extras
 import sys
 import psycopg2.extensions as psql_ext
-from . import utils
+from . import roland as ro
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
@@ -19,7 +19,7 @@ app.config['DEBUG'] = True
 #Establish connection to the DB
 conn = None
 try:
-    conn = utils.load_database(app.config)
+    conn = ro.utils.load_database(app.config)
 except psql.DatabaseError as error:
     print(error, file = sys.stderr)
 
@@ -38,10 +38,7 @@ def connect():
 #SELECT all the projects from Project
 @app.route("/api/v1/projects/all", methods = ['GET'])
 def get_projects():
-    with utils.DatabaseContext(conn, cursor_factory=psql_extras.RealDictCursor) as cur:
-        cur.execute('SELECT * FROM Project')
-        all_projects = cur.fetchall()
-    return(jsonify(all_projects))
+    return jsonify(ro.projects.get_projects(conn))
 
 #SELECTs a specific project based on the parameters passed
 @app.route("/api/v1/projects", methods = ['GET'])
