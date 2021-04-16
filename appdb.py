@@ -25,6 +25,11 @@ except Exception as error:
 ###########################################
 # TODO: Determine if it's possible to move these to their own files...
 
+@app.route("/api/v1/authenticate")
+def authenticate():
+    # FIXME: Implement user authentication with GitHub.
+    return jsonify({ "error": "Not implemented "}), 500
+
 @app.route("/api/v1/projects/<string:id>")
 def api_single_project(id: str):
     project = ro.projects.get_project(APPDB_CONNECTION, id)
@@ -46,18 +51,67 @@ def api_get_project():
     return jsonify(ro.projects.list_projects(APPDB_CONNECTION))
 
 @app.route("/api/v1/search")
-def api_search_database():
+def api_search():
     return ro.search.search(APPDB_CONNECTION)
 
+###########################################
+# MARK: ERROR HANDLING                    #
+###########################################
 
-#Returns 404 if something goes wrong
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template("404.html"), 404
+    return render_template("pages/error.html", errcode=404), 404
 
-#Returns OK if connected
+if not app.config['DEBUG']:
+    @app.errorhandler(Exception)
+    def internal_server_error(e):
+        print(e, file=sys.stderr)
+        return render_template("pages/error.html", errcode=500), 500
+
+###########################################
+# MARK: USER PAGES                        #
+###########################################
+
 @app.route("/")
-def connect():
+def index():
+    return "200", 200
+
+@app.route("/apps")
+def prod_apps():
+    return "200", 200
+
+@app.route("/lists")
+def prod_lists():
+    return "200", 200
+
+@app.route("/search")
+def prod_search():
+    return "200", 200
+
+
+@app.route("/auth/login")
+def auth_login():
+    return "200", 200
+
+
+@app.route("/auth/logout")
+def auth_logout():
+    return "200", 200
+
+###########################################
+# MARK: DEVELOPER PAGES                   #
+###########################################
+
+@app.route("/developer/dashboard")
+def dev_dashboard():
+    return "200", 200
+
+###########################################
+# MARK: CURATOR PAGES                     #
+###########################################
+
+@app.route("/curator/dashboard")
+def cur_dashboard():
     return "200", 200
 
 if __name__ != "__main__":
