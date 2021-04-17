@@ -1,0 +1,25 @@
+{% extends "default.html" %}
+{% block title %}Login - Candella AppDB{% endblock %}
+{% block content %}
+<div class="p-strip--suru">
+    <div class="row">
+        <div class="col-7">
+            <h1>Sign in to Candella AppDB</h1>
+            <p>
+                Sign in to Candella AppDB to leave reviews on your favorite apps,
+                frameworks, and core services for Candella. And, if you're a developer,
+                upload and maintain your projects to a large audience.
+            </p>
+            <p>
+                <a href="{{ gh_auth_url }}" class="p-button p-button--positive">
+                    Log in with GitHub
+                </a>
+            </p>
+        </div>
+        <div class="col-5">
+            <img class="cc-auth--img" src="{{ url_for('static', filename='img/sprite.svg') }}" alt="Candella" />
+        </div>
+    </div>
+</div>
+<div class="p-strip"></div>
+{% endblock %}

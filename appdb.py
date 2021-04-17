@@ -5,7 +5,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request, redirect, abort
 from . import roland as ro
 import sys
 
@@ -25,19 +25,27 @@ except Exception as error:
 ###########################################
 # TODO: Determine if it's possible to move these to their own files...
 
-@app.route("/api/v1/authenticate")
+@app.route("/api/v1/authenticate", methods=["GET"])
 def authenticate():
     # FIXME: Implement user authentication with GitHub.
+    query = request.args
+
+    if query.get("error"):
+        return jsonify({ 
+            "error": "GitHub Authorization Failure",
+            "details": query.get("error_description")
+        }), 400
+
     return jsonify({ "error": "Not implemented "}), 500
 
-@app.route("/api/v1/projects/<string:id>")
+@app.route("/api/v1/projects/<string:id>", methods=["GET"])
 def api_single_project(id: str):
     project = ro.projects.get_project(APPDB_CONNECTION, id)
     if not project:
         return jsonify({"error": "Record not found"}), 404
     return jsonify(project)
 
-@app.route("/api/v1/projects/<string:id>/releases")
+@app.route("/api/v1/projects/<string:id>/releases", methods=["GET"])
 def api_project_releases(id: str):
     project = ro.projects.get_project(APPDB_CONNECTION, id)
     if not project:
@@ -50,7 +58,7 @@ def api_project_releases(id: str):
 def api_get_project():
     return jsonify(ro.projects.list_projects(APPDB_CONNECTION))
 
-@app.route("/api/v1/search")
+@app.route("/api/v1/search", methods=["GET"])
 def api_search():
     return ro.search.search(APPDB_CONNECTION)
 
@@ -78,20 +86,26 @@ def index():
 
 @app.route("/apps")
 def prod_apps():
-    return "200", 200
+    # FIXME: Implement this page.
+    abort(404)
 
 @app.route("/lists")
 def prod_lists():
-    return "200", 200
+    # FIXME: Implement this page.
+    abort(404)
 
 @app.route("/search")
 def prod_search():
-    return "200", 200
+    # FIXME: Implement this page.
+    abort(404)
 
 
 @app.route("/auth/login")
 def auth_login():
-    return "200", 200
+    client_id = app.config['GH_CLIENT_ID']
+    auth_url = f"https://github.com/login/oauth/authorize?client_id={client_id}"\
+        + "&scope=user:email%20read:user&allow_signup=true"
+    return render_template("pages/login.html", gh_auth_url=auth_url), 200
 
 
 @app.route("/auth/logout")
