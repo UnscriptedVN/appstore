@@ -58,3 +58,16 @@ def get_releases(in_app_db, project_id: str) -> dict:
         comm = SQL("select * from Release where projectId = %s")
         cur.execute(comm, [project_id])
         return cur.fetchall()
+
+def get_reviews(in_app_db, project_id: str) -> dict:
+    """Returns reviews for a given project"""
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
+        comm = SQL("select * from Reviews where projectId = %s")
+        cur.execute(comm, [project_id])
+        return cur.fetchall()
+
+def get_dependencies(in_app_db, project_id: str) -> dict:
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
+        comm = SQL("select * from (DependsOn natural join Project) where projectId = %s")
+        cur.execute(comm, [project_id])
+        return cur.fetchall()
