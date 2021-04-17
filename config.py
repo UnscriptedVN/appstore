@@ -5,7 +5,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-from os import getenv
+from os import getenv, urandom
 from dotenv import load_dotenv
 
 load_dotenv(".env")
@@ -19,3 +19,5 @@ PSQL_HOST = getenv("PSQL_HOST")
 # GitHub API variables
 GH_CLIENT_ID = getenv("GH_CLIENT_ID")
 GH_CLIENT_SECRET = getenv("GH_CLIENT_SECRET")
+
+SECRET_KEY = urandom(16)
