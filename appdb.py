@@ -62,6 +62,10 @@ def api_get_project():
 def api_search():
     return ro.search.search(APPDB_CONNECTION)
 
+@app.route("/api/v1/users/<string:id>", methods = ['GET'])
+def api_get_user(id: str):
+    return jsonify(ro.accounts.get_account(APPDB_CONNECTION, id))
+
 ###########################################
 # MARK: ERROR HANDLING                    #
 ###########################################
@@ -82,7 +86,9 @@ if not app.config['DEBUG']:
 
 @app.route("/")
 def index():
-    return "200", 200
+    featured = ro.projects.get_project(
+        APPDB_CONNECTION, "dev.unscriptedvn.candella.celeste-shell")
+    return render_template("pages/index.html", featured=featured), 200
 
 @app.route("/apps")
 def prod_apps():
@@ -98,6 +104,11 @@ def prod_lists():
 def prod_search():
     # FIXME: Implement this page.
     abort(404)
+
+
+@app.route("/apps/<string:project_id>")
+def project_detail(project_id):
+    return abort(404)
 
 
 @app.route("/auth/login")

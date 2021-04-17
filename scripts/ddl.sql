@@ -1,29 +1,13 @@
 create table Account (
     userId serial primary key,
+    githubId text,
     name text,
+    accountType integer check (accountType > -1 and accountType < 3),
     email text
 );
 
-create table UserAccount(
-    userId serial,
-    foreign key (userId) references Account
-);
-
-create table Developer (
-    userId serial unique,
-    githubId text unique,
-    primary key (userId, githubId),
-    foreign key (userId) references Account
-);
-
-create table Curator (
-    userId serial primary key,
-    curatorId serial,
-    foreign key (userId) references Account
-);
-
 create table License(
-    licenseId integer primary key,
+    licenseId serial primary key,
     licenseName text
 );
 
@@ -40,8 +24,9 @@ create table Project(
 create table Maintains (
     projectId text,
     githubId text,
+    primary key (projectId, githubId),
     foreign key (projectId) references Project,
-    foreign key (githubId) references Developer(githubId) on delete set null
+    foreign key (githubId) references Account(githubId) on delete set null
 );
 
 create table Permission(
@@ -68,11 +53,12 @@ create table Reviews(
 );
 
 create table List(
+    -- Add a trigger to make sure Curator is actually curating lists
     listId serial primary key,
     name text,
     blurb text,
-    curatorId serial,
-    foreign key (curatorId) references Curator
+    userId serial,
+    foreign key (userId) references Account
 );
 
 create table Includes(
@@ -83,15 +69,16 @@ create table Includes(
 );
 
 create table Release (
+    -- Add a trigger to make sure Curator approved this
     version text primary key,
     notes text,
     dowloadUrl text,
     projectId text,
     inspectDate timestamp with time zone,
     inspectStatus integer check (inspectStatus > -1 and inspectStatus < 3),
-    curatorId serial,
+    userId serial,
     foreign key (projectId) references Project,
-    foreign key (curatorId) references Curator
+    foreign key (userid) references Account
 );
 
 create table DependsOn(

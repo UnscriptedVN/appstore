@@ -16,12 +16,15 @@
                 <a class="p-button--positive" href="{{ url_for('project_detail', project_id=project.id) }}">Get</a>
             </p>
         </div>
-        <div class="col-5">
-            {% if project.screenshots %}
-            <img src="{{ project.screenshots[0] }}" alt="Featured project image">
-            {% else %}
-            <img src="{{ project.icon }}" alt="Featured project icon">
-            {% endif %}
-        </div>
+        {# FIXME: Enable this when we track screenshots and icons. #}
+        {#
+            <div class="col-5">
+                {% if "screenshots" in project %}
+                <img src="{{ project.screenshots[0] }}" alt="Featured project image">
+                {% else %}
+                <img src="{{ project.icon }}" alt="Featured project icon">
+                {% endif %}
+            </div>
+        #}
     </div>
 </div>
