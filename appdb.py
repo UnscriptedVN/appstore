@@ -25,14 +25,14 @@ except Exception as error:
 ###########################################
 # TODO: Determine if it's possible to move these to their own files...
 
-@app.route("/api/v1/projects/<string:id>")
+@app.route("/api/v1/projects/<string:id>", methods = ['GET'])
 def api_single_project(id: str):
     project = ro.projects.get_project(APPDB_CONNECTION, id)
     if not project:
         return jsonify({"error": "Record not found"}), 404
     return jsonify(project)
 
-@app.route("/api/v1/projects/<string:id>/releases")
+@app.route("/api/v1/projects/<string:id>/releases", methods = ['GET'])
 def api_project_releases(id: str):
     project = ro.projects.get_project(APPDB_CONNECTION, id)
     if not project:
@@ -49,6 +49,9 @@ def api_get_project():
 def api_search_database():
     return ro.search.search(APPDB_CONNECTION)
 
+@app.route("/api/v1/users/<string:id>", methods = ['GET'])
+def api_get_user(id: str):
+    return jsonify(ro.accounts.get_account(APPDB_CONNECTION, id))
 
 #Returns 404 if something goes wrong
 @app.errorhandler(404)
