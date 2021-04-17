@@ -31,17 +31,24 @@ def __transform_project_data(project: RealDictRow) -> RealDictRow:
     new_project["license"] = new_project["licenseid"]
     del new_project["licenseid"]
     
+    new_project["icon"] = new_project["projecticon"]
+    del new_project["projecticon"]
+    
     new_project["type"] = str(ProjectType(new_project["type"]).name).lower()
     return new_project
 
-def list_projects(in_app_db) -> dict:
+def list_projects(in_app_db) -> list:
     """Returns a list of all projects."""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
         cur.execute('select * from Project')
         data = cur.fetchall().copy()
+    projects = []
     for project in data:
-        project = __transform_project_data(project)
-    return data
+        new_project = __transform_project_data(project)
+        new_project["releases"] = get_releases(in_app_db, project["projectid"])
+        new_project["screenshots"] = get_screenshots(in_app_db, project["projectid"])
+        projects.append(new_project)
+    return projects
 
 def get_project(in_app_db, project_id: str) -> dict:
     """Returns the row in the projects table with a specified ID."""
@@ -50,6 +57,7 @@ def get_project(in_app_db, project_id: str) -> dict:
         cur.execute(comm, [project_id])
         real_project_data = __transform_project_data(cur.fetchone())
     real_project_data["releases"] = get_releases(in_app_db, project_id)
+    real_project_data["screenshots"] = get_screenshots(in_app_db, project_id)
     return real_project_data
 
 def get_releases(in_app_db, project_id: str) -> dict:
@@ -58,3 +66,11 @@ def get_releases(in_app_db, project_id: str) -> dict:
         comm = SQL("select * from Release where projectId = %s")
         cur.execute(comm, [project_id])
         return cur.fetchall()
+
+
+def get_screenshots(in_app_db, project_id: str) -> list:
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
+        comm = SQL("select screenUrl from Screenshot where projectId = %s")
+        cur.execute(comm, [project_id])
+        screens_data = cur.fetchall()
+    return [s["screenurl"] for s in screens_data]

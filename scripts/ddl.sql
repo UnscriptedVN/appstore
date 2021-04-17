@@ -16,17 +16,28 @@ create table Project(
     type integer,
     name text,
     version text,
-    description text,
-    licenseId serial,
+    description text not null,
+    blurb text,
+    licenseId integer,
+    projectIcon text,
     foreign key (licenseId) references License
 );
 
+create table Screenshot(
+    screenId serial primary key,
+    projectId text,
+    screenUrl text,
+    foreign key (projectId) references Project
+);
+
+-- TODO: Write a trigger to verify that a developer maintains this project,
+-- not some user.
 create table Maintains (
     projectId text,
-    githubId text,
-    primary key (projectId, githubId),
+    userId integer,
+    primary key (projectId, userId),
     foreign key (projectId) references Project,
-    foreign key (githubId) references Account(githubId) on delete set null
+    foreign key (userId) references Account (userId) on delete set null
 );
 
 create table Permission(
