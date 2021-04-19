@@ -3,7 +3,7 @@ create table Account (
     githubId text,
     name text,
     accountType integer check (accountType > -1 and accountType < 3),
-    email text
+    email unique text check (email ~* '([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})')
 );
 
 create table License(

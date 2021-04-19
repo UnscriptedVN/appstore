@@ -9,6 +9,7 @@ from flask import Flask, render_template, jsonify, request, redirect, abort, ses
 from flask.helpers import url_for
 from . import roland as ro
 import sys
+import re
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
@@ -53,8 +54,8 @@ def api_single_project(id: str):
         return jsonify({"error": "Record not found"}), 404
     return jsonify(project)
 
+@app.route("/api/v1/projects/<string:id>/releases", methods = ['GET'])
 
-@app.route("/api/v1/projects/<string:id>/releases", methods=["GET"])
 def api_project_releases(id: str):
     project = ro.projects.get_project(APPDB_CONNECTION, id)
     if not project:
@@ -74,9 +75,19 @@ def api_search():
     return ro.search.search(APPDB_CONNECTION)
 
 
-@app.route("/api/v1/users/<string:id>", methods=['GET'])
-def api_get_user(id: str):
-    return jsonify(ro.accounts.get_account(APPDB_CONNECTION, id))
+@app.route("/api/v1/users/<int:id>", methods = ['GET'])
+def api_get_user(id:int):
+   account = ro.accounts.get_account(APPDB_CONNECTION, id)
+   if not account:
+       return jsonify({"error": "Record not found"}), 404
+    return jsonify(account)
+
+@app.route("/api/v1/users/<str:email>/email", methods = ['GET'])
+    account = ro.accounts.get_account_by_email(APPDB_CONNECTION, email)
+    if not account:
+        return jsonify({"error": "Record not found"}), 404
+    return jsonify(account)
+
 
 ###########################################
 # MARK: ERROR HANDLING                    #
