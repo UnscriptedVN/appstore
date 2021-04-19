@@ -55,7 +55,6 @@ def api_single_project(id: str):
     return jsonify(project)
 
 @app.route("/api/v1/projects/<string:id>/releases", methods = ['GET'])
-
 def api_project_releases(id: str):
     project = ro.projects.get_project(APPDB_CONNECTION, id)
     if not project:
@@ -80,9 +79,12 @@ def api_get_user(id:int):
    account = ro.accounts.get_account(APPDB_CONNECTION, id)
    if not account:
        return jsonify({"error": "Record not found"}), 404
-    return jsonify(account)
+   return jsonify(account)
 
+# NOTE: Why is the API exposing this? I'm not sure if the API should be exposing this directly. The api_get_user should
+# suffice. - @alicerunsonfedora
 @app.route("/api/v1/users/<str:email>/email", methods = ['GET'])
+def api_get_email(email):
     account = ro.accounts.get_account_by_email(APPDB_CONNECTION, email)
     if not account:
         return jsonify({"error": "Record not found"}), 404
