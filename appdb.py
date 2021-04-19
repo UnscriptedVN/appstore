@@ -9,7 +9,6 @@ from flask import Flask, render_template, jsonify, request, redirect, abort, ses
 from flask.helpers import url_for
 from . import roland as ro
 import sys
-import re
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
@@ -150,7 +149,14 @@ def prod_search():
 
 @app.route("/apps/<string:project_id>")
 def project_detail(project_id):
-    return abort(404)
+    app = ro.projects.get_project(APPDB_CONNECTION, project_id)
+    if not app:
+        abort(404)
+    
+    permissions = [] if not app["permissions"] else \
+        [ro.projects.get_permission(APPDB_CONNECTION, val) for val in app["permissions"]]
+
+    return render_template("pages/app_detail.html", app=app, permissions=permissions), 200
 
 
 @app.route("/auth/register")
@@ -205,6 +211,9 @@ def dev_dashboard():
 
 @app.route("/curator/dashboard")
 def cur_dashboard():
+    acct = ro.accounts.get_account(APPDB_CONNECTION, session.get("cuid"))
+    if not acct or acct["type"] != ro.accounts.AccountType.Curator:
+        abort(401)
     return "200", 200
 
 

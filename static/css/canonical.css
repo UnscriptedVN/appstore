@@ -121,3 +121,44 @@
   height: 20rem;
   width: 100%;
 }
+
+/* MARK: Project Detail */
+.cc-project-detail {
+  display: flex;
+  flex-direction: row;
+}
+
+.cc-project-detail--icon {
+  width: 128px;
+  height: 128px;
+  clip-path: url("../img/app_mask.svg");
+}
+
+.cc-project-detail--basic_info {
+  padding-left: 1rem;
+  flex-grow: 1;
+}
+
+.cc-project-detail--basic_info .p-heading--2 {
+  margin-bottom: 0;
+}
+
+.cc-project-detail--dev_info {
+  text-align: right;
+}
+
+.cc-project-detail--dev_info .p-heading--4 {
+  margin-bottom: 0;
+}
+
+@media (max-width: 620px) {
+  .cc-project-detail {
+    flex-direction: column;
+  }
+  .cc-project-detail--basic_info {
+    padding-left: initial;
+  }
+  .cc-project-detail--dev_info {
+    text-align: initial;
+  }
+}

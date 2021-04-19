@@ -4,6 +4,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from typing import Optional
 from .utils import DatabaseContext
 from psycopg2.extras import RealDictCursor, RealDictRow
 from psycopg2.sql import SQL
@@ -16,7 +17,7 @@ class ProjectType(IntEnum):
     Framework = 2
 
 
-def __transform_project_data(project: RealDictRow) -> RealDictRow:
+def __transform_project_data(project: RealDictRow, appdb=None) -> RealDictRow:
     """Returns a transformed version of the project data, or itself if the project doesn't exist."""
     if not project:
         return project
@@ -28,7 +29,7 @@ def __transform_project_data(project: RealDictRow) -> RealDictRow:
     new_project["latest_version"] = new_project["version"]
     del new_project["version"]
     
-    new_project["license"] = new_project["licenseid"]
+    new_project["license"] = get_project_license(appdb, new_project["licenseid"])
     del new_project["licenseid"]
     
     new_project["icon"] = new_project["projecticon"]
@@ -44,9 +45,10 @@ def list_projects(in_app_db) -> list:
         data = cur.fetchall().copy()
     projects = []
     for project in data:
-        new_project = __transform_project_data(project)
+        new_project = __transform_project_data(project, in_app_db)
         new_project["releases"] = get_releases(in_app_db, project["projectid"])
         new_project["screenshots"] = get_screenshots(in_app_db, project["projectid"])
+        new_project["permissions"] = get_project_permissions(in_app_db, project["projectid"])
         projects.append(new_project)
     return projects
 
@@ -55,9 +57,10 @@ def get_project(in_app_db, project_id: str) -> dict:
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
         comm = SQL("select * from Project where projectid = %s")
         cur.execute(comm, [project_id])
-        real_project_data = __transform_project_data(cur.fetchone())
+        real_project_data = __transform_project_data(cur.fetchone(), in_app_db)
     real_project_data["releases"] = get_releases(in_app_db, project_id)
     real_project_data["screenshots"] = get_screenshots(in_app_db, project_id)
+    real_project_data["permissions"] = get_project_permissions(in_app_db, project_id)
     return real_project_data
 
 def get_releases(in_app_db, project_id: str) -> dict:
@@ -86,3 +89,25 @@ def get_dependencies(in_app_db, project_id: str) -> dict:
         comm = SQL("select * from (DependsOn natural join Project) where projectId = %s")
         cur.execute(comm, [project_id])
         return cur.fetchall()
+
+def get_project_license(in_app_db, license_id) -> Optional[str]:
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
+        command = SQL("select licenseName from License where licenseId = %s")
+        cursor.execute(command, [license_id])
+        result = cursor.fetchone()
+
+    if not result:
+        return None
+    return result["licensename"]
+
+def get_project_permissions(in_app_db, project_id: str) -> list:
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
+        command = SQL("select requiredKey from Requires where projectId = %s")
+        cursor.execute(command, [project_id])
+        return [req["requiredkey"] for req in cursor.fetchall()]
+
+def get_permission(in_app_db, perm: str) -> dict:
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
+        command = SQL("select * from Permission where requiredKey = %s")
+        cursor.execute(command, [perm])
+        return cursor.fetchone()
