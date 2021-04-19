@@ -106,3 +106,18 @@
     display: none;
   }
 }
+
+/* MARK: Error Header */
+
+.cc-error-header {
+  text-align: center;
+}
+
+.cc-error-header h1 {
+  font-size: 4rem;
+}
+
+.cc-auth--img {
+  height: 20rem;
+  width: 100%;
+}

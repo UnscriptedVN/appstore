@@ -13,13 +13,13 @@
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>{% block title %}Candella AppDB{% endblock %}</title>
-        {% include "imports.html" %}
+        {% include "components/imports.html" %}
     </head>
-    {% include "navbar.html" %}
+    {% include "components/navbar.html" %}
     <body>
         {% block content %}
         {% endblock %}
     </body>
-    {% include "footer.html" %}
-    {% include "scripts.html" %}
+    {% include "components/footer.html" %}
+    {% include "components/scripts.html" %}
 </html>

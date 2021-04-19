@@ -1,0 +1,40 @@
+{#
+    Error Page
+    (C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#}
+{% extends "default.html" %}
+{% block content %}
+<div class="p-strip--suru-topped">
+    <div class="cc-error-header">
+        <h1><code>{{ errcode }}</code></h1>
+    </div>
+</div>
+<div class="p-strip is-shallow">
+    <div class="row">
+        <div class="col-7">
+            <h2>Whoops!</h2>
+            <p class="u-text--muted">
+                We apologize for the inconvenience, but it appears an error has occured.
+                You may want to verify that the URL is correct and that the page exists
+                before trying again.
+            </p>
+            <p><a href="{{ url_for('index') }}" class="p-button">Go to homepage</a></p>
+            <hr/>
+            <p class="u-text--muted" id="rxw-js__err">
+                If you are a developer or curator using the API, you may want to view the request
+                details in your browser's inspector.
+            </p>
+        </div>
+        <div class="col-5">
+            <figure>
+                <img src="{{ url_for('static', filename='img/404.png') }}" alt="Page not found" />
+                <figcaption>What are you doing bro?</figcaption>
+            </figure>
+        </div>
+    </div>
+</div>
+{% endblock %}
