@@ -83,23 +83,27 @@ def api_get_user(id:int):
 
 # NOTE: Why is the API exposing this? I'm not sure if the API should be exposing this directly. The api_get_user should
 # suffice. - @alicerunsonfedora
-@app.route("/api/v1/users/<str:email>/email", methods = ['GET'])
-def api_get_email(email):
-    account = ro.accounts.get_account_by_email(APPDB_CONNECTION, email)
-    if not account:
-        return jsonify({"error": "Record not found"}), 404
-    return jsonify(account)
+# @app.route("/api/v1/users/<str:email>/email", methods = ['GET'])
+# def api_get_email(email):
+#     account = ro.accounts.get_account_by_email(APPDB_CONNECTION, email)
+#     if not account:
+#         return jsonify({"error": "Record not found"}), 404
+#     return jsonify(account)
 
 
 ###########################################
 # MARK: ERROR HANDLING                    #
 ###########################################
-
+def __database_failure():
+    return render_template("pages/dbsetup.html"), 500
 
 @app.errorhandler(404)
-def page_not_found(e):
+def err_page_not_found(e):
     return render_template("pages/error.html", errcode=404), 404
 
+@app.errorhandler(401)
+def err_forbidden(e):
+    return render_template("pages/error.html", errcode=401), 401
 
 @app.errorhandler(500)
 def err_internal_server(e):
@@ -119,6 +123,8 @@ if not app.config['DEBUG']:
 
 @app.route("/")
 def index():
+    if not APPDB_CONNECTION:
+        return __database_failure()
     featured = ro.projects.get_project(
         APPDB_CONNECTION, "dev.unscriptedvn.candella.celeste-shell")
     return render_template("pages/index.html", featured=featured), 200
@@ -149,6 +155,8 @@ def project_detail(project_id):
 
 @app.route("/auth/register")
 def auth_register():
+    if not APPDB_CONNECTION:
+        return __database_failure()
     if not session.get("rxw_reg"):
         abort(401)
     new_account = ro.accounts.get_account(APPDB_CONNECTION, session["cuid"])
@@ -159,6 +167,8 @@ def auth_register():
 
 @app.route("/auth/login")
 def auth_login():
+    if not APPDB_CONNECTION:
+        return __database_failure()
     if session.get("cuid") or session.get("login_token"):
         return redirect(url_for("auth_register")) if session["rxw_reg"] else redirect(url_for("index"))
     client_id = app.config['GH_CLIENT_ID']
@@ -183,6 +193,9 @@ def auth_logout():
 
 @app.route("/developer/dashboard")
 def dev_dashboard():
+    acct = ro.accounts.get_account(APPDB_CONNECTION, session.get("cuid"))
+    if not acct or acct["type"] != ro.accounts.AccountType.Developer:
+        abort(401)
     return "200", 200
 
 ###########################################
