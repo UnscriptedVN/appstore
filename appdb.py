@@ -73,8 +73,8 @@ def api_search():
     return ro.search.search(APPDB_CONNECTION)
 
 
-@app.route("/api/v1/users/<string:id>", methods = ['GET'])
-def api_get_user(id:str):
+@app.route("/api/v1/users/<int:id>", methods = ['GET'])
+def api_get_user(id: int):
    account = ro.accounts.get_account(APPDB_CONNECTION, id)
    if not account:
        return jsonify({"error": "Record not found"}), 404
@@ -86,15 +86,15 @@ def api_get_all_lists():
 
 @app.route("/api/v1/lists/<string:id>", methods = ['GET'])
 def api_single_list(id: str):
-    return jsonify(ro.get_one_list(APPDB_CONNECTION, id))
+    return jsonify(ro.lists.get_one_list(APPDB_CONNECTION, id))
 
 @app.route("/api/v1/lists/curator/<string:id>", methods = ['GET'])
 def api_curator_lists(id:str):
-    return jsonify(ro.lists.get_curator_lists(id))
+    return jsonify(ro.lists.get_curator_lists(APPDB_CONNECTION, id))
 
 @app.route("/api/v1/lists/project/<string:id>", methods = ['GET'])
 def api_get_project_in_curator_list(id:str):
-    return jsonify(ro.lists.get_project_in_curator_list(id))
+    return jsonify(ro.lists.get_project_in_curator_list(APPDB_CONNECTION, id))
 
 ###########################################
 # MARK: ERROR HANDLING                    #

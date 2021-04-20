@@ -35,6 +35,7 @@ def get_account_by_email(in_app_db, email:str) -> dict:
         cur.execute(comm, [email])
         account = __get_account_type(cur.fetchone())
         return account
+
 def get_account(in_app_db, userId: int) -> dict:
     """Returns the row in the accounts projects table with a specified ID."""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
@@ -56,3 +57,11 @@ def create_account(in_app_db, username, email_address, github_id, type=AccountTy
         cursor.execute(command, [str(github_id), username, email_address, type])
         in_app_db.commit()
     return get_account_by_github_id(in_app_db, github_id)
+
+
+def update_account_type(in_app_db, user_id, account_type=AccountType.UserAccount):
+    """Update the type of account present."""
+    with DatabaseContext(in_app_db) as cursor:
+        command = SQL("update Account set accountType = %s where userId = %s")
+        cursor.execute(command, [account_type, user_id])
+        in_app_db.commit()
