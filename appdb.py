@@ -73,22 +73,28 @@ def api_search():
     return ro.search.search(APPDB_CONNECTION)
 
 
-@app.route("/api/v1/users/<int:id>", methods = ['GET'])
-def api_get_user(id:int):
+@app.route("/api/v1/users/<string:id>", methods = ['GET'])
+def api_get_user(id:str):
    account = ro.accounts.get_account(APPDB_CONNECTION, id)
    if not account:
        return jsonify({"error": "Record not found"}), 404
    return jsonify(account)
 
-# NOTE: Why is the API exposing this? I'm not sure if the API should be exposing this directly. The api_get_user should
-# suffice. - @alicerunsonfedora
-# @app.route("/api/v1/users/<str:email>/email", methods = ['GET'])
-# def api_get_email(email):
-#     account = ro.accounts.get_account_by_email(APPDB_CONNECTION, email)
-#     if not account:
-#         return jsonify({"error": "Record not found"}), 404
-#     return jsonify(account)
+@app.route("/api/v1/lists", methods = ["GET"])
+def api_get_all_lists():
+    return jsonify(ro.lists.get_all_curator_lists(APPDB_CONNECTION))
 
+@app.route("/api/v1/lists/<string:id>", methods = ['GET'])
+def api_single_list(id: str):
+    return jsonify(ro.get_one_list(APPDB_CONNECTION, id))
+
+@app.route("/api/v1/lists/curator/<string:id>", methods = ['GET'])
+def api_curator_lists(id:str):
+    return jsonify(ro.lists.get_curator_lists(id))
+
+@app.route("/api/v1/lists/project/<string:id>", methods = ['GET'])
+def api_get_project_in_curator_list(id:str):
+    return jsonify(ro.lists.get_project_in_curator_list(id))
 
 ###########################################
 # MARK: ERROR HANDLING                    #

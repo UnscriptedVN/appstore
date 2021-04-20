@@ -49,11 +49,6 @@ def get_account_by_github_id(in_app_db, gh_id: str) -> Optional[RealDictRow]:
         cur.execute(comm, [str(gh_id)])
         return cur.fetchone()
 
-def get_account_by_email(in_app_db, email: str) -> dict:
-    # FIXME: Implement this method.
-    return {}
-
-
 def create_account(in_app_db, username, email_address, github_id, type=AccountType.UserAccount):
     """Creates an account on the database."""
     with DatabaseContext(in_app_db) as cursor:

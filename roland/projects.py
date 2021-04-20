@@ -84,7 +84,15 @@ def get_reviews(in_app_db, project_id: str) -> dict:
         cur.execute(comm, [project_id])
         return cur.fetchall()
 
+def get_reviews_by_user(in_app_db, userId: str) -> dict:
+    """Returns all reviews that the user made"""
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
+        comm = SQL("select * from Reviews where userId = %s")
+        cur.execute(comm, [userId])
+        return cur.fetchall()
+
 def get_dependencies(in_app_db, project_id: str) -> dict:
+    """Returns all dependencies of a given project"""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
         comm = SQL("select * from (DependsOn natural join Project) where projectId = %s")
         cur.execute(comm, [project_id])
@@ -111,3 +119,10 @@ def get_permission(in_app_db, perm: str) -> dict:
         command = SQL("select * from Permission where requiredKey = %s")
         cursor.execute(command, [perm])
         return cursor.fetchone()
+
+def get_projects_by_developer(in_app_db, userId: str) -> dict:
+    """Returns all the projects for a developer"""
+    with DatabaseContext(in_app_db, cursor_factory = RealDictCursor) as cur:
+        comm = SQL("select * from (Mantains natural join Project) where userId = %s")
+        cur.execute(comm, [userId])
+        return cur.fetchall()
