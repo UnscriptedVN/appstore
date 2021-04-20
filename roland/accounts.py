@@ -24,7 +24,7 @@ def __get_account_type(account: RealDictRow) -> RealDictRow:
         return account
     new_account = account.copy()
 
-    new_account["type"] = str(AccountType(new_account["accountType"]).name).lower()
+    new_account["type"] = str(AccountType(new_account["accounttype"]).name).lower()
 
     return new_account
 

@@ -172,10 +172,18 @@ def auth_register():
     if not session.get("rxw_reg"):
         abort(401)
     new_account = ro.accounts.get_account(APPDB_CONNECTION, session["cuid"])
-    del session["rxw_reg"]
     session.modified = True
-    return "200", 200
+    return render_template("pages/acct_register.html", account=new_account), 200
 
+
+@app.route("/auth/register/callback", methods=["GET", "POST"])
+def update_account_type():
+    if not session.get("rxw_reg") or not session.get("login_token"):
+        abort(401)
+    account_type = ro.accounts.AccountType(int(request.form["account_type"]))
+    ro.accounts.update_account_type(APPDB_CONNECTION, session.get("cuid"), account_type=account_type)
+    del session["rxw_reg"]
+    return redirect(url_for("index"))
 
 @app.route("/auth/login")
 def auth_login():
@@ -206,7 +214,7 @@ def auth_logout():
 @app.route("/developer/dashboard")
 def dev_dashboard():
     acct = ro.accounts.get_account(APPDB_CONNECTION, session.get("cuid"))
-    if not acct or acct["type"] != ro.accounts.AccountType.Developer:
+    if not acct or acct["accounttype"] != ro.accounts.AccountType.Developer:
         abort(401)
     return "200", 200
 
@@ -218,7 +226,7 @@ def dev_dashboard():
 @app.route("/curator/dashboard")
 def cur_dashboard():
     acct = ro.accounts.get_account(APPDB_CONNECTION, session.get("cuid"))
-    if not acct or acct["type"] != ro.accounts.AccountType.Curator:
+    if not acct or acct["accounttype"] != ro.accounts.AccountType.Curator:
         abort(401)
     return "200", 200
 
