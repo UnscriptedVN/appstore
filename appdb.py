@@ -176,7 +176,9 @@ def developer_detail(developer_id: int):
         abort(404)
     if developer["accounttype"] != ro.accounts.AccountType.Developer:
         abort(500)
-    return jsonify(developer), 200
+
+    projects_by_dev = ro.projects.get_projects_by_developer(APPDB_CONNECTION, developer["userid"])
+    return render_template("pages/dev_detail.html", developer=developer, projects=projects_by_dev), 200
 
 ###########################################
 # MARK: AUTHENTICATION PAGES              #
