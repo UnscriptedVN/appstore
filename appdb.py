@@ -162,8 +162,25 @@ def project_detail(project_id):
     permissions = [] if not app["permissions"] else \
         [ro.projects.get_permission(APPDB_CONNECTION, val) for val in app["permissions"]]
 
-    return render_template("pages/app_detail.html", app=app, permissions=permissions), 200
+    developer = ro.projects.get_developer(APPDB_CONNECTION, app["id"])
+    related = ro.projects.get_projects_by_developer(APPDB_CONNECTION, developer["userid"])
 
+    return render_template(
+        "pages/app_detail.html", app=app, permissions=permissions, dev=developer, rel=related), 200
+
+@app.route("/apps/developer/<int:developer_id>")
+def developer_detail(developer_id: int):
+    # TODO: Return a page instead of the raw data.
+    developer = ro.accounts.get_account(APPDB_CONNECTION, developer_id)
+    if not developer:
+        abort(404)
+    if developer["accounttype"] != ro.accounts.AccountType.Developer:
+        abort(500)
+    return jsonify(developer), 200
+
+###########################################
+# MARK: AUTHENTICATION PAGES              #
+###########################################
 
 @app.route("/auth/register")
 def auth_register():

@@ -23,17 +23,22 @@ def __transform_project_data(project: RealDictRow, appdb=None) -> RealDictRow:
         return project
     new_project = project.copy()
     
+    # Re-map project fields for API.
     new_project["id"] = new_project["projectid"]
-    del new_project["projectid"]
-    
     new_project["latest_version"] = new_project["version"]
-    del new_project["version"]
-    
     new_project["license"] = get_project_license(appdb, new_project["licenseid"])
-    del new_project["licenseid"]
-    
     new_project["icon"] = new_project["projecticon"]
+    del new_project["projectid"]
+    del new_project["version"]
     del new_project["projecticon"]
+    del new_project["licenseid"]
+
+    # Add new fields based on context.
+    new_project["developer"] = get_developer(appdb, new_project["id"])["userid"]
+    new_project["releases"] = get_releases(appdb, new_project["id"])
+    new_project["screenshots"] = get_screenshots(appdb, new_project["id"])
+    new_project["permissions"] = get_project_permissions(
+        appdb, new_project["id"])
     
     new_project["type"] = str(ProjectType(new_project["type"]).name).lower()
     return new_project
@@ -45,11 +50,7 @@ def list_projects(in_app_db) -> list:
         data = cur.fetchall().copy()
     projects = []
     for project in data:
-        new_project = __transform_project_data(project, in_app_db)
-        new_project["releases"] = get_releases(in_app_db, project["projectid"])
-        new_project["screenshots"] = get_screenshots(in_app_db, project["projectid"])
-        new_project["permissions"] = get_project_permissions(in_app_db, project["projectid"])
-        projects.append(new_project)
+        projects.append(__transform_project_data(project, in_app_db))
     return projects
 
 def get_project(in_app_db, project_id: str) -> dict:
@@ -58,9 +59,6 @@ def get_project(in_app_db, project_id: str) -> dict:
         comm = SQL("select * from Project where projectid = %s")
         cur.execute(comm, [project_id])
         real_project_data = __transform_project_data(cur.fetchone(), in_app_db)
-    real_project_data["releases"] = get_releases(in_app_db, project_id)
-    real_project_data["screenshots"] = get_screenshots(in_app_db, project_id)
-    real_project_data["permissions"] = get_project_permissions(in_app_db, project_id)
     return real_project_data
 
 def get_releases(in_app_db, project_id: str) -> dict:
@@ -120,9 +118,18 @@ def get_permission(in_app_db, perm: str) -> dict:
         cursor.execute(command, [perm])
         return cursor.fetchone()
 
-def get_projects_by_developer(in_app_db, userId: str) -> dict:
+def get_projects_by_developer(in_app_db, userId: str) -> list:
     """Returns all the projects for a developer"""
     with DatabaseContext(in_app_db, cursor_factory = RealDictCursor) as cur:
-        comm = SQL("select * from (Mantains natural join Project) where userId = %s")
+        comm = SQL("select * from (Maintains natural join Project) where userId = %s")
         cur.execute(comm, [userId])
-        return cur.fetchall()
+        projects = []
+        for project in cur.fetchall():
+            projects.append(__transform_project_data(project, in_app_db))
+        return projects
+
+def get_developer(in_app_db, of_project_id: str) -> dict:
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
+        command = SQL("select userId, name from (Maintains natural join Account) where projectId = %s")
+        cursor.execute(command, [of_project_id])
+        return cursor.fetchone()

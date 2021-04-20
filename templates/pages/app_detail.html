@@ -20,7 +20,9 @@
             </p>
         </div>
         <div class="cc-project-detail--dev_info">
-            <p class="p-heading--4">Developer name</p>
+            <p class="p-heading--4">
+                <a href="{{ url_for('developer_detail', developer_id=dev.userid) }}">{{ dev.name }}</a>
+            </p>
             <p class="u-text--muted">{{ app.license }}</p>
         </div>
     </div>
@@ -88,6 +90,18 @@
         <h2 class="p-heading--3">Ratings and reviews</h2>
         {# TODO: Add reviews here. #}
         <p>There are no reviews for this project.</p>
+    </div>
+</div>
+<div class="p-strip">
+    <div class="row">
+        <h2 class="p-heading--3">More from this developer</h2>
+    </div>
+    <div class="row">
+        {% for project in rel[:3] %}
+            <div class="col-4">
+                {% include "components/project_card.html" %}
+            </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
