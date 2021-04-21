@@ -143,9 +143,11 @@ def prod_apps():
 
 @app.route("/lists")
 def prod_lists():
-    # FIXME: Implement this page.
-    abort(404)
-
+    lists = ro.lists.get_all_curator_lists(APPDB_CONNECTION)
+    projects_for_lists = {}
+    for list in lists:
+        projects_for_lists[list["listid"]] = ro.lists.get_projects_from_list(APPDB_CONNECTION, list["listid"])
+    return render_template("pages/lists.html", lists=lists, projects=projects_for_lists), 200
 
 @app.route("/search")
 def prod_search():
@@ -179,6 +181,14 @@ def developer_detail(developer_id: int):
 
     projects_by_dev = ro.projects.get_projects_by_developer(APPDB_CONNECTION, developer["userid"])
     return render_template("pages/dev_detail.html", developer=developer, projects=projects_by_dev), 200
+
+
+@app.route("/lists/<int:id>")
+def list_detail(id: int):
+    curated_list = ro.lists.get_one_list(APPDB_CONNECTION, str(id))
+    projects = ro.lists.get_projects_from_list(APPDB_CONNECTION, str(id))
+    curator = ro.accounts.get_account(APPDB_CONNECTION,curated_list["userid"])
+    return render_template("pages/list_detail.html", list=curated_list, projects=projects, curator=curator), 200
 
 ###########################################
 # MARK: AUTHENTICATION PAGES              #

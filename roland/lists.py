@@ -9,6 +9,7 @@
 from .utils import DatabaseContext
 from psycopg2.extras import RealDictCursor, RealDictRow
 from psycopg2.sql import SQL
+from .projects import _transform_project_data
 
 def get_all_curator_lists(in_app_db) -> dict:
     """Return all curated lists"""
@@ -22,7 +23,7 @@ def get_one_list(in_app_db, listId: str) -> dict:
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
         comm = SQL("select * from List where listId = %s")
         cur.execute(comm, [listId])
-        return cur.fetchall()
+        return cur.fetchone()
         
 def get_curator_lists(in_app_db, userId: str) -> dict:
     """Returns all the lists that a Curator made"""
@@ -37,3 +38,9 @@ def get_project_in_curator_list(in_app_db, project_id: str) -> dict:
         comm = SQL("select * from Includes where projectId = %s")
         cur.execute(comm, [project_id])
         return cur.fetchall()
+
+def get_projects_from_list(in_app_db, list_id: str) -> list:
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
+        command = SQL("select * from (Project join Includes using (projectId)) where listId = %s")
+        cursor.execute(command, [list_id])
+        return [_transform_project_data(s, in_app_db) for s in cursor.fetchall()]

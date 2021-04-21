@@ -1,0 +1,28 @@
+{% extends "default.html" %}
+{% block title %}Curated Lists - Candella AppDB{% endblock %}
+{% block content %}
+<div class="p-strip--suru-topped">
+    <div class="row">
+        <h1>Curated lists</h1>
+        <p>
+            The following lists have been curated by the Candella AppDB team. Check them
+            out and find your next favorite project!
+        </p>
+    </div>
+</div>
+{% for list in lists %}
+<div id="rxw-curated-list__id-{{ list.listid }}" class="p-strip is-shallow">
+    <div class="row">
+        <h2>{{ list.name }}</h2>
+        <p><a class="p-button" href="{{ url_for('list_detail', id=list.listid) }}">Show more &rsaquo;</a></p>
+    </div>
+    <div class="row">
+        {% for project in projects[list.listid][:3] %}
+        <div class="col-4">
+            {% include "components/project_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

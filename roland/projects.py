@@ -17,7 +17,7 @@ class ProjectType(IntEnum):
     Framework = 2
 
 
-def __transform_project_data(project: RealDictRow, appdb=None) -> RealDictRow:
+def _transform_project_data(project: RealDictRow, appdb=None) -> RealDictRow:
     """Returns a transformed version of the project data, or itself if the project doesn't exist."""
     if not project:
         return project
@@ -50,7 +50,7 @@ def list_projects(in_app_db) -> list:
         data = cur.fetchall().copy()
     projects = []
     for project in data:
-        projects.append(__transform_project_data(project, in_app_db))
+        projects.append(_transform_project_data(project, in_app_db))
     return projects
 
 def get_project(in_app_db, project_id: str) -> dict:
@@ -58,7 +58,7 @@ def get_project(in_app_db, project_id: str) -> dict:
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
         comm = SQL("select * from Project where projectid = %s")
         cur.execute(comm, [project_id])
-        real_project_data = __transform_project_data(cur.fetchone(), in_app_db)
+        real_project_data = _transform_project_data(cur.fetchone(), in_app_db)
     return real_project_data
 
 def get_releases(in_app_db, project_id: str) -> dict:
@@ -125,7 +125,7 @@ def get_projects_by_developer(in_app_db, userId: str) -> list:
         cur.execute(comm, [userId])
         projects = []
         for project in cur.fetchall():
-            projects.append(__transform_project_data(project, in_app_db))
+            projects.append(_transform_project_data(project, in_app_db))
         return projects
 
 def get_developer(in_app_db, of_project_id: str) -> dict:
