@@ -5,7 +5,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from .api import api as api_blueprint
 from .userland import userland as userland_blueprint
 from .developer import developer as developer_blueprint
@@ -24,6 +24,10 @@ with app.app_context():
     app.register_blueprint(developer_blueprint)
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(curator_blueprint)
+
+@app.before_request
+def register_session():
+    session.permanent = True
 
 @app.after_request
 def after_request(response):

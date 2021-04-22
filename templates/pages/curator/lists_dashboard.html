@@ -1,0 +1,32 @@
+{% extends "default.html" %}
+{% block title %}My Lists{% endblock %}
+{% block content %}
+<div class="p-strip--suru-topped">
+    <div class="row">
+        <p><a class="p-button" href="{{ url_for('curator.cur_dashboard') }}">&lsaquo; Back to dashboard</a></p>
+        <h2>My curated lists</h2>
+        <p>
+            Below is a list of all of the lists you're currently curating. Click "Add list"
+            to add a new list, or click "Manage" on any given list to edit its properties.
+        </p>
+        <p>
+            <a class="p-button--positive has-icon" href="{{ url_for('curator.create_list') }}">
+                <i class="p-icon--plus is-light"></i><span>Add list</span>
+            </a>
+        </p>
+    </div>
+</div>
+<div class="p-strip is-shallow">
+    {% for list in lists %}
+    <div class="row">
+        <h3>{{ list.name }}</h3>
+        <p class="u-text--muted">{{ projs[list.listid]|length }} projects total</p>
+        <p>{{ list.blurb | truncate(75) }}</p>
+        <p>
+            <a class="p-button" href="{{ url_for('curator.manage_list', list_id=list.listid) }}">Manage</a>
+            <a class="p-button" href="{{ url_for('userland.list_detail', id=list.listid) }}">View</a>
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
