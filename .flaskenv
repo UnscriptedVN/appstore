@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-FLASK_APP=appdb.py
+FLASK_APP=src/appdb.py
 
 # This will be the default port used on the AppDB if not set in the environment
 # variables.

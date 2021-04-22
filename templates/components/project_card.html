@@ -6,18 +6,19 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #}
-{% include "imports.html" %}
 <div id="project-card__id-{{ project.id }}" class="p-card cc-project-card">
     <p class="cc-project-card__header u-text--muted">{{ project.type }}</p>
     <hr>
     {% if project.screenshots %}
-    <img src="{{ project.screenshots[0] }}" alt="Screenshot of {{ project.name }}">
+        <img src="{{ project.screenshots[0] }}" alt="Screenshot of {{ project.name }}">
     {% endif %}
     <div>
         <p class="p-heading--3 cc-project-card__name">
-            <a href="{{ url_for('/project', project_id=project.id) }}">{{ project.name }}</a>
+            <a href="{{ url_for('userland.project_detail', project_id=project.id) }}">{{ project.name }}</a>
         </p>
-        <p class="p-heading--5 u-text--muted cc-project-card__author">{{ project.author }}</p>
+        {% if dev %}
+            <p class="p-heading--5 u-text--muted cc-project-card__author">{{ dev.name }}</p>
+        {% endif %}
         <p>
             {{ project.description | truncate(100) }}
         </p>

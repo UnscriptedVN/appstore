@@ -1,0 +1,20 @@
+{% extends "default.html" %}
+{% block title %}{{ list.name }} - Candella AppDB{% endblock %}
+{% block content %}
+<div class="p-strip--suru">
+    <div class="row">
+        <h1>{{ list.name }}</h1>
+        <p>{{ list.blurb }}</p>
+        <p class="u-text--muted"><i class="p-icon--user"></i>Curated by {{ curator.name }}</p>
+    </div>
+</div>
+<div class="p-strip is-shallow">
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-4">
+            {% include "components/project_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

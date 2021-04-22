@@ -1,0 +1,107 @@
+{% extends "default.html" %}
+{% block title %} {{ app.name }} - Candella AppDB{% endblock %}
+{% block content %}
+<div class="p-strip--dark">
+    <div class="cc-project-detail row">
+        <div>
+            <img src="{{ app.icon }}" class="cc-project-detail--icon" />
+        </div>
+        <div class="cc-project-detail--basic_info">
+            <p class="p-heading--2">{{ app.name }}
+                <span class="p-heading--4 u-text--muted">v{{ app.latest_version }}</span>
+            </p>
+            <p class="u-text--muted">
+                {{ app.description }}
+            </p>
+            <p>
+                <button class="p-button--positive"href="#" {% if app.releases|length == 0 %}disabled=""{% endif %}>
+                    Get
+                </button>
+            </p>
+        </div>
+        <div class="cc-project-detail--dev_info">
+            <p class="p-heading--4">
+                <a href="{{ url_for('userland.developer_detail', developer_id=dev.userid) }}">{{ dev.name }}</a>
+            </p>
+            <p class="u-text--muted">{{ app.license }}</p>
+        </div>
+    </div>
+</div>
+<div class="p-strip">
+    <div class="row">
+        <h2 class="p-heading--3">Screenshots</h2>
+    </div>
+    <div class="row">
+        {% for screenshot in app.screenshots[:2] %}
+        <div class="col-6">
+            <img src="{{ screenshot }}"/>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% if app.releases %}
+<div class="p-strip">
+    <div class="row">
+        <h2 class="p-heading--3">What's new in this release</h2>
+        <p>{{ app.releases[0]["notes"] }}</p>
+    </div>
+</div>
+{% else %}
+<div class="p-strip--light is-shallow">
+    <div class="row">
+        <p class="p-heading--6"><i class="p-icon--warning"></i>
+            The developer has not listed any new downloadable releases.</p>
+        <p>
+            The developer may be updating this project with new releases or their project
+            doesn't comply with the AppDB project guidelines.
+        </p>
+    </div>
+</div>
+{% endif %}
+<div class="p-strip">
+    <div class="row">
+        <h2 class="p-heading--3">About this app</h2>
+        <p>
+            {% if app.blurb %}
+            {{ app.blurb }}
+            {% else %}
+            No description has been provided for this project.
+            {% endif %}
+        </p>
+    </div>
+</div>
+<div class="p-strip--light">
+    <div class="row">
+        <h2 class="p-heading--3">Project permissions</h2>
+        <p>
+            The developer has noted that this project needs the following permissions to function correctly.
+            You can review these permissions anytime in the App Manager when installed.
+        </p>
+        {% for permission in permissions %}
+            <p class="p-heading--4">
+                <i class="p-icon--anchor"></i>&nbsp;{{ permission["readablename"] }}
+            </p>
+            <p>{{ permission["description"] }} </p>
+        {% endfor %}
+    </div>
+</div>
+<div class="p-strip">
+    <div class="row">
+        <h2 class="p-heading--3">Ratings and reviews</h2>
+        {# TODO: Add reviews here. #}
+        <p>There are no reviews for this project.</p>
+    </div>
+</div>
+<div class="p-strip">
+    <div class="row">
+        <h2 class="p-heading--3">More from this developer</h2>
+    </div>
+    <div class="row">
+        {% for project in rel[:3] %}
+            <div class="col-4">
+                {% include "components/project_card.html" %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

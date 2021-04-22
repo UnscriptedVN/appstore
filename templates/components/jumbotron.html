@@ -13,7 +13,7 @@
             <h2 class="project-title">{{ project.name }}</h2>
             <p>{% if project.blurb %}{{ project.blurb }}{% else %}{{ project.description }}{% endif %}</p>
             <p>
-                <a class="p-button--positive" href="{{ url_for('project_detail', project_id=project.id) }}">Get</a>
+                <a class="p-button--positive" href="{{ url_for('userland.project_detail', project_id=project.id) }}">Get</a>
             </p>
         </div>
         <div class="col-5">

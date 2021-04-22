@@ -1,0 +1,32 @@
+{% extends "default.html" %}
+{% block title %}Setup Database - Candella AppDB{% endblock %}
+{% block content %}
+<div class="p-strip--suru-topped">
+    <div class="row">
+        <div class="col-7">
+            <h1>Almost there!</h1>
+            <p>
+                Welcome! Candella AppDB is almost ready to be used. You'll need to create
+                and load the schema for the AppDB backend into your database. Please create
+                the database you specified in your environment keys, if you haven't already,
+                and follow the instructions provided here.
+            </p>
+            <p>
+                Please run the following in your terminal to continue, and then refresh the page
+                to see the changes:
+            </p>
+            <pre><code>psql -U &lt;your_username&gt; -d &lt;db_name&gt; -f scripts/ddl.sql</code></pre>
+            <hr />
+            <h2 class="p-heading--4">Already have set up the backend?</h2>
+            <p class="u-text--muted">
+                You might be seeing this page if the AppDB was unable to connect to the database
+                you specified. Ensure that your environment keys are valid and that you can
+                establish a connection to your database.
+            </p>
+        </div>
+        <div class="col-5">
+            <img class="cc-auth--img" src="{{ url_for('static', filename='img/sprite.svg') }}" alt="Candella" />
+        </div>
+    </div>
+</div>
+{% endblock %}
