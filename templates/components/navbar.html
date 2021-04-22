@@ -18,7 +18,7 @@
     <div class="p-navigation__row">
         <div class="p-navigation__banner">
             <div class="p-navigation__logo">
-                <a class="p-navigation__item" href="{{ url_for('index') }}">
+                <a class="p-navigation__item" href="{{ url_for('userland.index') }}">
                     <img class="p-navigation__image" src="https://candella.unscriptedvn.dev/img/logomark-dark.svg"
                         alt="AppDB" width="95">
                 </a>
@@ -32,13 +32,13 @@
             </span>
             <ul class="p-navigation__items" style="order:0;">
                 <li class="p-navigation__item {% if request.path == '/apps' %}is-selected{% endif %}">
-                    <a class="p-navigation__link" href="{{ url_for('prod_apps') }}">Apps</a>
+                    <a class="p-navigation__link" href="{{ url_for('userland.prod_apps') }}">Apps</a>
                 </li>
                 <li class="p-navigation__item {% if request.path == '/lists' %}is-selected{% endif %}">
-                    <a class="p-navigation__link" href="{{ url_for('prod_lists') }}">Lists</a>
+                    <a class="p-navigation__link" href="{{ url_for('userland.prod_lists') }}">Lists</a>
                 </li>
             </ul>
-            <form class="p-search-box" action="{{ url_for('prod_search') }}" method="get" style="order:1;">
+            <form class="p-search-box" action="{{ url_for('userland.prod_search') }}" method="get" style="order:1;">
                 <input class="p-search-box__input" type="text" placeholder="Search..." name="query" autocomplete="off"
                     required="">
                 <button type="reset" class="p-search-box__reset"><i class="p-icon--close"></i></button>

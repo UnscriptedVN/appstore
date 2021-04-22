@@ -14,7 +14,7 @@
     {% endif %}
     <div>
         <p class="p-heading--3 cc-project-card__name">
-            <a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.name }}</a>
+            <a href="{{ url_for('userland.project_detail', project_id=project.id) }}">{{ project.name }}</a>
         </p>
         {% if dev %}
             <p class="p-heading--5 u-text--muted cc-project-card__author">{{ dev.name }}</p>

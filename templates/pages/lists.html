@@ -14,7 +14,7 @@
 <div id="rxw-curated-list__id-{{ list.listid }}" class="p-strip is-shallow">
     <div class="row">
         <h2>{{ list.name }}</h2>
-        <p><a class="p-button" href="{{ url_for('list_detail', id=list.listid) }}">Show more &rsaquo;</a></p>
+        <p><a class="p-button" href="{{ url_for('userland.list_detail', id=list.listid) }}">Show more &rsaquo;</a></p>
     </div>
     <div class="row">
         {% for project in projects[list.listid][:3] %}
