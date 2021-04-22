@@ -5,7 +5,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https: //mozilla.org/MPL/2.0/.
 
-from flask import Blueprint, render_template, jsonify, request, redirect, abort, session, g as gblspace
+from flask import Blueprint, render_template, abort
 from . import roland as ro
 from .database import connect_database
 
@@ -23,8 +23,7 @@ def index():
 
 @userland.route("/apps")
 def prod_apps():
-    # FIXME: Implement this page.
-    abort(404)
+    return render_template("pages/projects.html"), 200
 
 
 @userland.route("/lists")

@@ -25,7 +25,7 @@ def authenticate():
             client_id=current_app.config["GH_CLIENT_ID"],
             client_secret=current_app.config["GH_CLIENT_SECRET"],
             app_database=connect_database())
-        return redirect(url_for("app.auth_register")) if redirect_to == "registered" \
+        return redirect(url_for("auth.auth_register")) if redirect_to == "registered" \
             else redirect(url_for("userland.index"))
     except Exception as error:
         print(error, file=sys.stderr)

@@ -52,18 +52,18 @@
                     </a>
                     <ul class="p-subnav__items--right" id="account-menu" aria-hidden="true">
                         <li>
-                            <a href="{{ url_for('dev_dashboard') }}" class="p-subnav__item">My projects</a>
+                            <a href="{{ url_for('developer.dev_dashboard') }}" class="p-subnav__item">My projects</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('cur_dashboard') }}" class="p-subnav__item">Curator dashboard</a>
+                            <a href="{{ url_for('curator.cur_dashboard') }}" class="p-subnav__item">Curator dashboard</a>
                         </li>
                         {% if not session.get("login_token") %}
                         <li>
-                            <a href="{{ url_for('auth_login') }}" class="p-subnav__item">Log in</a>
+                            <a href="{{ url_for('auth.auth_login') }}" class="p-subnav__item">Log in</a>
                         </li>
                         {% else %}
                         <li>
-                            <a href="{{ url_for('auth_logout') }}" class="p-subnav__item">Sign out</a>
+                            <a href="{{ url_for('auth.auth_logout') }}" class="p-subnav__item">Sign out</a>
                         </li>
                         {% endif %}
                     </ul>
