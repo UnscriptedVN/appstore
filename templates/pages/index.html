@@ -12,4 +12,19 @@
 {% with project=featured %}
     {% include "components/jumbotron.html" %}
 {% endwith %}
+<div class="p-strip">
+
+</div>
+<div class="p-strip--dark">
+    <div class="row">
+        <h2 class="p-heading--3">Are you a developer?</h2>
+        <p>
+            Share and distribute your projects with a large audience of developers and users on AppDB. It's
+            free and only takes a couple of minutes to upload your first release to AppDB.
+        </p>
+        <p>
+            <a class="p-button--brand" href="{{ url_for('developer.dev_dashboard') }}">Get started &rsaquo;</a>
+        </p>
+    </div>
+</div>
 {% endblock %}

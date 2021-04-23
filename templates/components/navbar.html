@@ -31,19 +31,34 @@
                 <a href="#main-content">Jump to main content</a>
             </span>
             <ul class="p-navigation__items" style="order:0;">
-                <li class="p-navigation__item {% if request.path == '/apps' %}is-selected{% endif %}">
-                    <a class="p-navigation__link" href="{{ url_for('userland.prod_apps') }}">Apps</a>
-                </li>
                 <li class="p-navigation__item {% if request.path == '/lists' %}is-selected{% endif %}">
-                    <a class="p-navigation__link" href="{{ url_for('userland.prod_lists') }}">Lists</a>
+                    <a class="p-navigation__link" href="{{ url_for('userland.prod_lists') }}">Recommended</a>
+                </li>
+                <li class="p-navigation__item p-subnav">
+                    <a class="p-subnav__toggle p-navigation__link" aria-controls="account-menu">
+                        Projects
+                    </a>
+                    <ul class="p-subnav__items" id="project-menu">
+                        <li>
+                            <a class="p-subnav__item" href="{{ url_for('userland.prod_apps') }}">Apps</a>
+                        </li>
+                        <li>
+                            <a class="p-subnav__item" href="{{ url_for('userland.services_list') }}">Services</a>
+                        </li>
+                        <li>
+                            <a class="p-subnav__item" href="{{ url_for('userland.frameworks_list') }}">Frameworks</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
-            <form class="p-search-box" action="{{ url_for('userland.prod_search') }}" method="get" style="order:1;">
-                <input class="p-search-box__input" type="text" placeholder="Search..." name="query" autocomplete="off"
-                    required="">
-                <button type="reset" class="p-search-box__reset"><i class="p-icon--close"></i></button>
-                <button type="submit" class="p-search-box__button"><i class="p-icon--search"></i></button>
-            </form>
+            {#
+                <form class="p-search-box" action="{{ url_for('userland.prod_search') }}" method="get" style="order:1;">
+                    <input class="p-search-box__input" type="text" placeholder="Search..." name="query" autocomplete="off"
+                        required="">
+                    <button type="reset" class="p-search-box__reset"><i class="p-icon--close"></i></button>
+                    <button type="submit" class="p-search-box__button"><i class="p-icon--search"></i></button>
+                </form>
+            #}
             <ul class="p-navigation__items" style="order:2;">
                 <li class="p-navigation__item p-subnav" id="link-4">
                     <a class="p-subnav__toggle p-navigation__link" aria-controls="account-menu">

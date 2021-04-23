@@ -1,0 +1,55 @@
+{% extends "default.html" %}
+{% block title %} Apps - Candella AppDB {% endblock %}
+{% block content %}
+<div class="p-strip--suru">
+    <div class="row">
+        <h1>Extend your gameplay</h1>
+        <p>
+            Apps are what make Candella fun and unique for any Ren'Py visual novel project.
+            Ranging from utilities like glossaries and diary apps to more entertaining ones
+            such as minigames or command-line programs, the AppDB has you covered. Check out
+            our growing list of apps here.
+        </p>
+    </div>
+</div>
+{% if apps| length > 0 %}
+<div class="p-strip">
+    <div class="row">
+        {% for project in apps %}
+        <div class="col-4">
+            {% include "components/project_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% elif error != None %}
+<div class="p-strip">
+    <div class="row">
+        <h6><i class="p-icon--error">Error:</i> An error occurred when trying to fetch apps.</h6>
+        <p>
+            If the issue persists, contact the Candella AppDB curators or report a bug on our
+            repository on GitHub.
+        </p>
+    </div>
+</div>
+{% else %}
+<div class="p-strip">
+    <div class="row">
+        <h6><i class="p-icon--warning">Warning:</i> No apps found in the AppDB.</h6>
+        <p>Apps may be under review or developers have not added their app to the AppDB yet.</p>
+    </div>
+</div>
+{% endif %}
+<div class="p-strip--dark">
+    <div class="row">
+        <h2 class="p-heading--3">Are you a developer?</h2>
+        <p>
+            Distribute your app to a large audience on AppDB. It's free and only takes a couple of minutes
+            to upload your first release to AppDB.
+        </p>
+        <p>
+            <a class="p-button--brand" href="{{ url_for('developer.dev_dashboard') }}">Get started &rsaquo;</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

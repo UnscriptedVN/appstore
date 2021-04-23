@@ -14,7 +14,12 @@
                 {{ app.description }}
             </p>
             <p>
-                <button class="p-button--positive"href="#" {% if app.releases|length == 0 %}disabled=""{% endif %}>
+                <button class="p-button--positive" href="#" 
+                {% if app.releases|length == 0 %}
+                    disabled=""
+                    title="There are no downloadable releases for this project yet."
+                {% endif %}
+                >
                     Get
                 </button>
             </p>

@@ -41,16 +41,18 @@ def _transform_project_data(project: RealDictRow, appdb=None) -> RealDictRow:
         appdb, new_project["id"])
     
     new_project["type"] = str(ProjectType(new_project["type"]).name).lower()
+    if new_project["type"] == "coreservice":
+        new_project["type"] = "core service"
     return new_project
 
-def list_projects(in_app_db) -> list:
+
+def list_projects(in_app_db, filter_by_type=[ProjectType.App, ProjectType.Framework, ProjectType.CoreService]) -> list:
     """Returns a list of all projects."""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
         cur.execute('select * from Project')
         data = cur.fetchall().copy()
-    projects = []
-    for project in data:
-        projects.append(_transform_project_data(project, in_app_db))
+    projects = [_transform_project_data(project, in_app_db) for project in data if \
+        ProjectType(project["type"]) in filter_by_type]
     return projects
 
 def get_project(in_app_db, project_id: str) -> dict:
