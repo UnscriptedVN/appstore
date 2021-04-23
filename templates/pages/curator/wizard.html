@@ -1,0 +1,38 @@
+{% extends "default.html" %}
+{% block title %}Create New List - Candella AppDB{% endblock %}
+{% block content %}
+<div class="p-strip--suru-topped">
+    <div class="row">
+        <p><a class="p-button" href="{{ url_for('curator.lists_dashboard') }}">&lsaquo; Back to lists</a></p>
+        <h2>Create a new list</h2>
+        <p>
+            Creating a new list will let users see recommended apps based on a specified criteria.
+            Criteria may vary based upon recency, category, or an editorial piece.
+        </p>
+    </div>
+    <div class="row">
+        <div class="col-10">
+            <form class="p-form p-form--stacked" action="{{ url_for('curator.create_list_request') }}" method="POST">
+                <label for="listName">List name</label>
+                <input type="text" name="name" id="listName" placeholder="My new list">
+
+                <label for="listBlurb">What's special about this list?</label>
+                <textarea id="listBlurb" name="blurb" rows="5"></textarea>
+                <fieldset>
+                    <label for="listApps">Which projects will be featured?</label>
+                    <select name="projects" id="listApps" multiple="">
+                        <option value="disabled" disabled="">Select projects...</option>
+                        {% for project in projects %}
+                        <option value="{{ project.id }}">{{ project.name }} <span class="u-text--muted">({{ project.id }})</span></option>
+                        {% endfor %}
+                    </select>
+                    <p class="u-text--muted">Note: Press Shift or Cmd/Ctrl to select multiple projects.</p>
+                </fieldset>
+                
+                <button class="p-button--positive" type="submit">Create</button>
+                <button type="reset">Reset</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

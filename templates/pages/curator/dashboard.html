@@ -1,0 +1,15 @@
+{% extends "default.html" %}
+{% block title %}My Dashboard - Candella AppDB {% endblock %}
+{% block content %}
+<div class="p-strip--suru-topped">
+    <div class="row">
+        <h1>Howdy, {{ curator.name }}.</h1>
+        <p>
+            You currently have no projects waiting for inspection in the queue.
+        </p>
+        <p>
+            <a class="p-button" href="{{ url_for('curator.lists_dashboard') }}">Manage my lists</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
