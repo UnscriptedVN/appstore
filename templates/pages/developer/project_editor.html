@@ -1,0 +1,86 @@
+{% extends "default.html" %}
+{% block content %}
+<div class="p-strip--suru-topped">
+    <div class="row">
+        <p><a class="p-button" href="{{ url_for('developer.dev_dashboard') }}">&lsaquo; Back to dashboard</a></p>
+        <h1 class="p-heading--2">{{ project.name }}</h1>
+    </div>
+    <div class="row">
+        <nav class="p-tabs">
+            <ul class="p-tabs__list" role="tablist">
+                <li class="p-tabs__item" role="presentation">
+                    <a {% if tab == 'info' %}aria-selected="true"{% endif %} href="{{ url_for('developer.edit_project', id=project.id) }}" class="p-tabs__link" tabindex="0" role="tab" aria-controls="info">Metadata</a>
+                </li>
+                <li class="p-tabs__item" role="presentation">
+                    <a {% if tab == 'releases' %}aria-selected="true"{% endif %} href="{{ url_for('developer.edit_project_releases', id=project.id) }}" class="p-tabs__link" tabindex="1" role="tab" aria-controls="release">Releases</a>
+                </li>
+                <li class="p-tabs__item" role="presentation">
+                    <a {% if tab == 'messages' %}aria-selected="true"{% endif %} href="{{ url_for('developer.edit_project_messages', id=project.id) }}" class="p-tabs__link" tabindex="2" role="tab" aria-controls="messages">Action Center</a>
+                </li>
+                <li class="p-tabs__item" role="presentation">
+                    <a {% if tab == 'reviews' %}aria-selected="true"{% endif %} href="{{ url_for('developer.edit_project_reviews', id=project.id) }}" class="p-tabs__link" tabindex="3" role="tab" aria-controls="reviews">Reviews</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% if tab == "info" %}
+    <div class="row">
+        <h2 class="p-heading--3">Basic information</h2>
+    </div>
+    <form class="p-form p-form--stacked" action="{{ url_for('developer.update_project_information') }}" method="POST">
+        <input type="hidden" name="id" value="{{ project.id }}">
+        <div class="p-form__group row">
+            <div class="col-3">
+                <label for="">Project icon preview</label>
+                <img 
+                    src="{% if project.icon %}{{ project.icon }}{% else %}{{ url_for('static', filename='img/default_project.png') }}{% endif %}"
+                    alt="{{ project.name }} icon" width=100% />
+                
+            </div>
+            <div class="col-9">
+                <label for="projectName">Project name</label>
+                <input type="text" name="name" id="projectName" placeholder="An amazing project" value="{{ project.name }}">
+                
+                <label for="projectTagline">Project tagline</label>
+                <input type="text" name="description" id="projectTagline" placeholder="A really cool project" value="{{ project.description }}">
+
+                <label for="projectLicense">Project license</label>
+                <select name="license" id="projectLicense">
+                    <option value="0" disabled="">Select...</option>
+                    {% for license in licenses %}
+                    <option value="{{ license.licenseid }}"{% if license.licensename == project.license %}selected{% endif %}>{{ license.licensename }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="p-form__group row">
+            <label for="projectIcon">Project icon URL</label>
+            <input type="text" name="icon" id="projectIcon" value="{{ project.icon }}">
+            <label for="projectBlurb">About this app</label>
+            <textarea name="blurb" id="projectBlurb" rows="5">{{ project.blurb }}</textarea>
+        </div>
+        <div class="p-form__group row">
+            <div class="col-3">
+                <button type="submit">Update informaton</button>
+            </div>
+        </div>
+    </form>
+    {% elif tab == "releases" %}
+    <div class="row">
+
+    </div>
+    {% elif tab == "messages" %}
+    <div class="row">
+
+    </div>
+    {% elif tab == "reviews" %}
+    <div class="row">
+        {% if reviews %}
+        {# TODO: Add reviews here #}
+        {% else %}
+        <p>No reviews for this project are available.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

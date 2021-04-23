@@ -4,7 +4,7 @@
 <div class="p-strip--dark">
     <div class="cc-project-detail row">
         <div>
-            <img src="{{ app.icon }}" class="cc-project-detail--icon" />
+            <img src="{% if app.icon %}{{ app.icon }}{% else %}{{ url_for('static', filename='img/default_project.png') }}{% endif %}" class="cc-project-detail--icon" />
         </div>
         <div class="cc-project-detail--basic_info">
             <p class="p-heading--2">{{ app.name }}
@@ -32,6 +32,7 @@
         </div>
     </div>
 </div>
+{% if app.screenshots %}
 <div class="p-strip">
     <div class="row">
         <h2 class="p-heading--3">Screenshots</h2>
@@ -44,6 +45,7 @@
         {% endfor %}
     </div>
 </div>
+{% endif %}
 {% if app.releases %}
 <div class="p-strip">
     <div class="row">
@@ -75,6 +77,7 @@
         </p>
     </div>
 </div>
+{% if permissions %}
 <div class="p-strip--light">
     <div class="row">
         <h2 class="p-heading--3">Project permissions</h2>
@@ -90,6 +93,7 @@
         {% endfor %}
     </div>
 </div>
+{% endif %}
 <div class="p-strip">
     <div class="row">
         <h2 class="p-heading--3">Ratings and reviews</h2>

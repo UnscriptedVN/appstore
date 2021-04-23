@@ -4,8 +4,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from warnings import warn
 from typing import Optional
 from .utils import DatabaseContext
+from . import licensing
 from psycopg2.extras import RealDictCursor, RealDictRow
 from psycopg2.sql import SQL
 from enum import IntEnum
@@ -99,14 +101,8 @@ def get_dependencies(in_app_db, project_id: str) -> dict:
         return cur.fetchall()
 
 def get_project_license(in_app_db, license_id) -> Optional[str]:
-    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
-        command = SQL("select licenseName from License where licenseId = %s")
-        cursor.execute(command, [license_id])
-        result = cursor.fetchone()
-
-    if not result:
-        return None
-    return result["licensename"]
+    warn("This method has been moved to the licensing submodule.", DeprecationWarning)
+    return licensing.get_project_license(in_app_db, license_id)
 
 def get_project_permissions(in_app_db, project_id: str) -> list:
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:

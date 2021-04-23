@@ -8,7 +8,7 @@
 #}
 <div class="cc-project-list row" id="project-list-entry__id-{{ project.id }}">
     <img class="cc-project-list__icon"
-        src="{{ project.icon }}"
+        src="{% if project.icon %}{{ project.icon }}{% else %}{{ url_for('static', filename='img/default_project.png') }}{% endif %}"
         alt="{{ project.name }} icon">
     <div class="cc-project-list__info">
         <p class="cc-project-list__title p-heading--3">{{ project.name }}</p>

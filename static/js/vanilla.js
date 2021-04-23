@@ -1,6 +1,7 @@
 // Pulled from Vanilla Framework documentation: https://vanillaframework.io/docs/patterns/navigation.
 // Licensed under LGPL-3.0.
 
+
 /**
   Toggles visibility of modal dialog.
   @param {HTMLElement} modal Modal dialog to show or hide.
