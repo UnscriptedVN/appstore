@@ -6,7 +6,7 @@
 # file, You can obtain one at https: //mozilla.org/MPL/2.0/.
 
 from sys import stderr
-from flask import Blueprint, abort, session, render_template, request, jsonify, url_for, redirect
+from flask import Blueprint, abort, session, render_template, request, url_for, redirect
 from .database import connect_database
 from . import roland as ro
 
@@ -126,6 +126,24 @@ def update_project_permissions():
     except Exception as error:
         print(error, stderr)
         abort(500)
+
+@developer.route("/projects/create_release", methods=["GET", "POST"])
+def create_release_request():
+    __verify_developer()
+    if not request.form or 'id' not in request.form:
+        abort(400)
+    for field in request.form:
+        if not field:
+            abort(400)
+    try:
+        ro.releases.create_release(
+            connect_database(), request.form['id'], request.form['version'], request.form['download'],
+            request.form['notes'], session.get('cuid'))
+        return redirect(url_for('developer.edit_project', id=request.form['id']))
+    except Exception as error:
+        print(error, stderr)
+        abort(500)
+
 
 @developer.route("/projects/delete", methods=["GET", "POST"])
 def delete_project():

@@ -8,13 +8,15 @@
         </div>
         <div class="cc-project-detail--basic_info">
             <p class="p-heading--2">{{ app.name }}
+                {% if app.latest_version %}
                 <span class="p-heading--4 u-text--muted">v{{ app.latest_version }}</span>
+                {% endif %}
             </p>
             <p class="u-text--muted">
                 {{ app.description }}
             </p>
             <p>
-                <button class="p-button--accent" href="#" 
+                <button class="p-button p-button--accent" onclick="window.location.href='{% if app.releases | length > 0%}{{ app.releases[0].download }}{% else %}#{% endif %}';" 
                 {% if app.releases|length == 0 %}
                     disabled=""
                     title="There are no downloadable releases for this project yet."

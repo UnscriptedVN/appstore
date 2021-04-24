@@ -5,10 +5,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https: //mozilla.org/MPL/2.0/.
 
-from src.database import connect_database
-from psycopg2 import connect
 from psycopg2.sql import SQL
-from psycopg2.extras import RealDictCursor, RealDictRow
 from .projects import ProjectType, get_project, get_project_permissions
 from .utils import DatabaseContext
 

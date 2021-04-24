@@ -123,8 +123,35 @@
     </div>
     </div>
     {% elif tab == "releases" %}
-    <div class="row">
-
+    <div id="project-releases">
+        <div class="row">
+            <h2 class="p-heading--3">Create a release</h2>
+        </div>
+        <form class="p-form p-form--stacked" action="{{ url_for('developer.create_release_request') }}" method="POST">
+            <input type="hidden" name="id" value="{{ project.id }}">
+            <div class="p-form__group row">
+                <div class="col-4">
+                    <label for="releaseVersion">Release version</label>
+                    <input type="text" name="version" id="releaseVersion" placeholder="0.0.0">
+                </div>
+                <div class="col-8">
+                    <label for="releaseUrl">Download URL</label>
+                    <input type="text" name="download" id="releaseUrl" placeholder="https://example.com/download">
+                </div>
+            </div>
+            <div class="p-form__group row">
+                <label for="releaseNotes">What's new in this version</label>
+                <textarea name="notes" id="releaseNotes" rows="10" placeholder="Minor bug fixes and improvements."></textarea>
+            </div>
+            <div class="p-form__group row">
+                <div class="col-4">
+                    <button class="p-button--positive" type="submit">Submit for review</button>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <h2 class="p-heading--3">Previous releases</h2>
+        </div>
     </div>
     {% elif tab == "messages" %}
     <div class="row">
@@ -146,22 +173,5 @@
         {% endif %}
     </div>
     {% endif %}
-</div>
-<div class="p-modal" id="delete-modal" style="display: none;">
-    <section class="p-modal__dialog" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-description">
-        <header class="p-modal__header">
-            <h2 class="p-modal__title" id="modal-title">Confirm delete</h2>
-            <button class="p-modal__close" aria-label="Close active modal" aria-controls="modal">Close</button>
-        </header>
-        <p>Are you sure you want to delete the project "{{ project.name }}"? This action is permanent and cannot be undone.
-        </p>
-        <footer class="p-modal__footer">
-            <form action="{{ url_for('developer.delete_project', id=project.id) }}" method="POST">
-                <input type="hidden" name="id" value="{{ project.id }}">
-                <button class="u-no-margin--bottom" aria-controls="modal">Cancel</button>
-                <button type="submit" class="p-button--negative u-no-margin--bottom">Delete</button>
-            </form>
-        </footer>
-    </section>
 </div>
 {% endblock %}
