@@ -1,0 +1,44 @@
+/* 
+Candella AppDB Vanilla Framework CSS Additions
+(C) 2021 Marquis Kurt, Nodar Sotkilava, and UnscriptedVN Team.
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/. 
+*/
+
+$color-brand: #CFCBB8;
+$color-accent: hsl(207, 78, 47);
+
+$color-suru-start: hsl(202, 78, 56);
+$color-suru-middle: hsl(207, 78, 47);
+$color-suru-end: hsl(207, 78, 36);
+
+$color-suru-start-branded: lighten($color-brand, 10%) !default;
+$color-suru-middle-branded: $color-brand !default;
+$color-suru-end-branded: darken($color-brand, 10%) !default;
+
+/* The following code is NOT licensed under the MPL-2.0. */
+
+@import 'vanilla-framework/scss/vanilla';
+@include vanilla;
+
+.p-strip--suru-topped.is-branded {
+  background-image: linear-gradient(to bottom left, rgba(229, 229, 229, 0.14) 0%, rgba(229, 229, 229, 0.14) 49%, transparent 50%, transparent 100%),
+  linear-gradient(to bottom left, rgba($color-suru-middle-branded, 0.14) 0%, rgba($color-suru-middle-branded, 0.14) 49%, transparent 50%, transparent 100%),
+  linear-gradient(to bottom right, transparent 0%, transparent 49%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 1) 100%),
+  linear-gradient(90deg, $color-suru-start-branded 4%, $color-suru-middle-branded 50%, $color-suru-end-branded 88%);
+  
+  @supports (background-blend-mode: multiply) {
+    background-blend-mode: multiply, multiply, normal, normal;
+    background-image: linear-gradient(to bottom left, rgba(229, 229, 229, 0.5) 0%, rgba(229, 229, 229, 0.5) 49%, transparent 50%, transparent 100%),
+    linear-gradient(to bottom left, rgba($color-suru-middle-branded, 0.16) 0%, rgba($color-suru-middle-branded, 0.16) 49%, transparent 50%, transparent 100%),
+    linear-gradient(to bottom right, transparent 0%, transparent 49%, #fff 50%, #fff 100%),
+    linear-gradient(90deg, $color-suru-start-branded 4%, $color-suru-middle-branded 50%, $color-suru-end-branded 88%);
+  }
+}
+
+.p-button--accent {
+  background-color: $color-accent;
+  color: $color-light;
+}

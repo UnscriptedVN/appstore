@@ -1,0 +1,16 @@
+{
+  "name": "vanilla-candella",
+  "version": "1.0.0",
+  "description": "The Vanilla framework CSS for Candella websites",
+  "main": "index.js",
+  "scripts": {
+    "build": "node-sass --include-path node_modules src --output dist",
+    "dist": "npm run build && cp ./dist/style.css ../static/css/"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-sass": "^5.0.0",
+    "vanilla-framework": "^2.23.0"
+  }
+}
