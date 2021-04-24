@@ -22,6 +22,9 @@
                 >
                     Get
                 </button>
+                {% if session.get('cuid') == app.developer %}
+                <a class="p-button" href="{{ url_for('developer.edit_project', id=app.id) }}">Manage</a>
+                {% endif %}
             </p>
         </div>
         <div class="cc-project-detail--dev_info">
@@ -77,10 +80,10 @@
         </p>
     </div>
 </div>
-{% if permissions %}
 <div class="p-strip--light">
     <div class="row">
         <h2 class="p-heading--3">Project permissions</h2>
+        {% if permissions | length > 0 %}
         <p>
             The developer has noted that this project needs the following permissions to function correctly.
             You can review these permissions anytime in the App Manager when installed.
@@ -91,9 +94,13 @@
             </p>
             <p>{{ permission["description"] }} </p>
         {% endfor %}
+        {% else %}
+        <p>
+            <i class="p-icon--success"></i> The developer has not requested any special system permissions for this project.
+        </p>
+        {% endif %}
     </div>
 </div>
-{% endif %}
 <div class="p-strip">
     <div class="row">
         <h2 class="p-heading--3">Ratings and reviews</h2>

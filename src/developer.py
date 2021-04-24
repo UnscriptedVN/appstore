@@ -87,6 +87,7 @@ def edit_project_reviews(id: str):
 
 @developer.route("/projects/update_information", methods=["GET", "POST"])
 def update_project_information():
+    __verify_developer()
     if not request.form:
         abort(400)
     
@@ -107,4 +108,33 @@ def update_project_information():
         print(error, stderr)
         abort(500)
 
-    return "200", 200
+@developer.route("/projects/update_permissions", methods=["GET", "POST"])
+def update_project_permissions():
+    __verify_developer()
+    if not request.form:
+        abort(400)
+    to_add, to_remove = [], []
+    for permission in ["file_system", "notifications", "system_events", "manage_users", "virtual_platform"]:
+        if permission in request.form and request.form[permission] == "on":
+            to_add.append(permission)
+            continue
+        to_remove.append(permission)
+    try:
+        print(to_add, to_remove)
+        ro.editor.update_project_permissions(connect_database(), request.form['id'], to_add, to_remove)
+        return redirect(url_for('developer.edit_project', id=request.form['id']))
+    except Exception as error:
+        print(error, stderr)
+        abort(500)
+
+@developer.route("/projects/delete", methods=["GET", "POST"])
+def delete_project():
+    __verify_developer()
+    if not request.form or 'id' not in request.form:
+        abort(400)
+    try:
+        ro.editor.delete_project(connect_database(), request.form['id'])
+        return redirect(url_for('developer.dev_dashboard'))
+    except Exception as error:
+        print(error, stderr)
+        abort(500)
