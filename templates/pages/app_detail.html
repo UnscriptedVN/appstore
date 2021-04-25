@@ -4,19 +4,29 @@
 <div class="p-strip--dark">
     <div class="cc-project-detail row">
         <div>
-            <img src="{{ app.icon }}" class="cc-project-detail--icon" />
+            <img src="{% if app.icon %}{{ app.icon }}{% else %}{{ url_for('static', filename='img/default_project.png') }}{% endif %}" class="cc-project-detail--icon" />
         </div>
         <div class="cc-project-detail--basic_info">
             <p class="p-heading--2">{{ app.name }}
+                {% if app.latest_version %}
                 <span class="p-heading--4 u-text--muted">v{{ app.latest_version }}</span>
+                {% endif %}
             </p>
             <p class="u-text--muted">
                 {{ app.description }}
             </p>
             <p>
-                <button class="p-button--positive"href="#" {% if app.releases|length == 0 %}disabled=""{% endif %}>
+                <button class="p-button p-button--accent" onclick="window.location.href='{% if app.releases | length > 0%}{{ app.releases[0].download }}{% else %}#{% endif %}';" 
+                {% if app.releases|length == 0 %}
+                    disabled=""
+                    title="There are no downloadable releases for this project yet."
+                {% endif %}
+                >
                     Get
                 </button>
+                {% if session.get('cuid') == app.developer %}
+                <a class="p-button" href="{{ url_for('developer.edit_project', id=app.id) }}">Manage</a>
+                {% endif %}
             </p>
         </div>
         <div class="cc-project-detail--dev_info">
@@ -27,6 +37,7 @@
         </div>
     </div>
 </div>
+{% if app.screenshots %}
 <div class="p-strip">
     <div class="row">
         <h2 class="p-heading--3">Screenshots</h2>
@@ -39,6 +50,7 @@
         {% endfor %}
     </div>
 </div>
+{% endif %}
 {% if app.releases %}
 <div class="p-strip">
     <div class="row">
@@ -73,6 +85,7 @@
 <div class="p-strip--light">
     <div class="row">
         <h2 class="p-heading--3">Project permissions</h2>
+        {% if permissions | length > 0 %}
         <p>
             The developer has noted that this project needs the following permissions to function correctly.
             You can review these permissions anytime in the App Manager when installed.
@@ -83,6 +96,11 @@
             </p>
             <p>{{ permission["description"] }} </p>
         {% endfor %}
+        {% else %}
+        <p>
+            <i class="p-icon--success"></i> The developer has not requested any special system permissions for this project.
+        </p>
+        {% endif %}
     </div>
 </div>
 <div class="p-strip">

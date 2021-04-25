@@ -1,0 +1,177 @@
+{% extends "default.html" %}
+{% block content %}
+<div class="p-strip--suru-topped is-branded">
+    <div class="row">
+        <p><a class="p-button" href="{{ url_for('developer.dev_dashboard') }}">&lsaquo; Back to dashboard</a></p>
+        <h1 class="p-heading--2">{{ project.name }}</h1>
+    </div>
+    <div class="row">
+        <nav class="p-tabs">
+            <ul class="p-tabs__list" role="tablist">
+                <li class="p-tabs__item" role="presentation">
+                    <a {% if tab == 'info' %}aria-selected="true"{% endif %} href="{{ url_for('developer.edit_project', id=project.id) }}" class="p-tabs__link" tabindex="0" role="tab" aria-controls="info">Metadata</a>
+                </li>
+                <li class="p-tabs__item" role="presentation">
+                    <a {% if tab == 'releases' %}aria-selected="true"{% endif %} href="{{ url_for('developer.edit_project_releases', id=project.id) }}" class="p-tabs__link" tabindex="1" role="tab" aria-controls="release">Releases</a>
+                </li>
+                <li class="p-tabs__item" role="presentation">
+                    <a {% if tab == 'messages' %}aria-selected="true"{% endif %} href="{{ url_for('developer.edit_project_messages', id=project.id) }}" class="p-tabs__link" tabindex="2" role="tab" aria-controls="messages">Action Center</a>
+                </li>
+                <li class="p-tabs__item" role="presentation">
+                    <a {% if tab == 'reviews' %}aria-selected="true"{% endif %} href="{{ url_for('developer.edit_project_reviews', id=project.id) }}" class="p-tabs__link" tabindex="3" role="tab" aria-controls="reviews">Reviews</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% if tab == "info" %}
+    <div id="project-info">
+    <div class="row">
+        <h2 class="p-heading--3">Basic information</h2>
+    </div>
+    <form class="p-form p-form--stacked" action="{{ url_for('developer.update_project_information') }}" method="POST">
+        <input type="hidden" name="id" value="{{ project.id }}">
+        <div class="p-form__group row">
+            <div class="col-3">
+                <label for="">Project icon preview</label>
+                <img 
+                    src="{% if project.icon %}{{ project.icon }}{% else %}{{ url_for('static', filename='img/default_project.png') }}{% endif %}"
+                    alt="{{ project.name }} icon" width=100% />
+                
+            </div>
+            <div class="col-9">
+                <label for="projectName">Project name</label>
+                <input type="text" name="name" id="projectName" placeholder="An amazing project" value="{{ project.name }}">
+                
+                <label for="projectTagline">Project tagline</label>
+                <input type="text" name="description" id="projectTagline" placeholder="A really cool project" value="{{ project.description }}">
+
+                <label for="projectLicense">Project license</label>
+                <select name="license" id="projectLicense">
+                    <option value="0" disabled="">Select...</option>
+                    {% for license in licenses %}
+                    <option value="{{ license.licenseid }}"{% if license.licensename == project.license %}selected{% endif %}>{{ license.licensename }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="p-form__group row">
+            <label for="projectIcon">Project icon URL</label>
+            <input type="text" name="icon" id="projectIcon" value="{{ project.icon }}">
+            <label for="projectBlurb">About this project</label>
+            <textarea name="blurb" id="projectBlurb" rows="5">{{ project.blurb }}</textarea>
+        </div>
+        <div class="p-form__group row">
+            <div class="col-3">
+                <button type="submit">Update informaton</button>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <h2 class="p-heading--3">Project permissions</h2>
+        <p>
+            Tick the boxes in the checklist that correspond to the permissions that your project requires.
+            This must match the permissions declared in your project's manifest file.
+        </p>
+    </div>
+    <form class="p-form p-form--stacked" action="{{ url_for('developer.update_project_permissions') }}" method="POST">
+        <input type="hidden" name="id" value="{{ project.id }}">
+        <div class="p-form__group row">
+            <label class="p-checkbox">
+                <input name="file_system" {% if 'file_system' in project.permissions %}checked=""{% endif %} type="checkbox" aria-labelledby="checkboxLabel0" class="p-checkbox__input">
+                <span class="p-checkbox__label" id="checkboxLabel0">File system access</span>
+            </label>
+            <label class="p-checkbox">
+                <input name="notificationd" type="checkbox" {% if 'notifications' in project.permissions %}checked=""{% endif %} aria-labelledby="checkboxLabel1" class="p-checkbox__input">
+                <span class="p-checkbox__label" id="checkboxLabel1">Send notification alerts, banners, and sounds</span>
+            </label>
+            <label class="p-checkbox">
+                <input name="system_events" {% if 'system_events' in project.permissions %}checked=""{% endif %} type="checkbox" aria-labelledby="checkboxLabel2" class="p-checkbox__input">
+                <span class="p-checkbox__label" id="checkboxLabel2">Hook into/listen for system events</span>
+            </label>
+            <label class="p-checkbox">
+                <input name="manage_users" {% if 'manage_users' in project.permissions %}checked=""{% endif %} type="checkbox" aria-labelledby="checkboxLabel3" class="p-checkbox__input">
+                <span class="p-checkbox__label" id="checkboxLabel3">Manage user accounts</span>
+            </label>
+            <label class="p-checkbox">
+                <input name="virtual_platform" {% if 'virtual_platform' in project.permissions %}checked=""{% endif %} type="checkbox" aria-labelledby="checkboxLabel4" class="p-checkbox__input">
+                <span class="p-checkbox__label" id="checkboxLabel4">Use the MeteorVM platform</span>
+            </label>
+        </div>
+        <div class="p-form__group row">
+            <div class="col-3">
+                <button type="submit">Update permissions</button>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <h2 class="p-heading--3">Project dependencies</h2>
+        <p>
+            Listing project dependencies is not currently supported in this prerelease of Candella AppDB.
+            If your project contains dependencies, we recommend informing the user in the download link
+            or in the project's "About this project" section.
+        </p>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <h2 class="p-heading--3">Remove project</h2>
+            <p>
+                Removing the project will make all releases of it unavailable, and users cannot leave reviews
+                on this project. <i>This action is irreversible and cannot be undone.</i>
+            </p>
+            <button class="p-button--negative" aria-controls="delete-modal">Remove...</button>
+        </div>
+    </div>
+    </div>
+    {% elif tab == "releases" %}
+    <div id="project-releases">
+        <div class="row">
+            <h2 class="p-heading--3">Create a release</h2>
+        </div>
+        <form class="p-form p-form--stacked" action="{{ url_for('developer.create_release_request') }}" method="POST">
+            <input type="hidden" name="id" value="{{ project.id }}">
+            <div class="p-form__group row">
+                <div class="col-4">
+                    <label for="releaseVersion">Release version</label>
+                    <input type="text" name="version" id="releaseVersion" placeholder="0.0.0">
+                </div>
+                <div class="col-8">
+                    <label for="releaseUrl">Download URL</label>
+                    <input type="text" name="download" id="releaseUrl" placeholder="https://example.com/download">
+                </div>
+            </div>
+            <div class="p-form__group row">
+                <label for="releaseNotes">What's new in this version</label>
+                <textarea name="notes" id="releaseNotes" rows="10" placeholder="Minor bug fixes and improvements."></textarea>
+            </div>
+            <div class="p-form__group row">
+                <div class="col-4">
+                    <button class="p-button--positive" type="submit">Submit for review</button>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <h2 class="p-heading--3">Previous releases</h2>
+        </div>
+    </div>
+    {% elif tab == "messages" %}
+    <div class="row">
+        <h2 class="p-heading--3">Messages not available</h2>
+        <p>
+            Action Center messages are currently unavailable in this prerelease build of the Candella
+            AppDB.
+        </p>
+        <p>
+            To view recent submission rejections, review the release status on the Releases tab.
+        </p>
+    </div>
+    {% elif tab == "reviews" %}
+    <div class="row">
+        {% if reviews %}
+        {# TODO: Add reviews here #}
+        {% else %}
+        <p>No reviews for this project are available.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

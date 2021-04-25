@@ -6,5 +6,7 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #}
-<link rel="stylesheet" href="/static/css/style.css" />
-<link rel="stylesheet" href="/static/css/canonical.css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/canonical.css') }}" />
+<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.svg') }}">
+<link rel="mask-icon" href="{{ url_for('static', filename='img/favicon_mask.svg') }}" color="#37A6E6">

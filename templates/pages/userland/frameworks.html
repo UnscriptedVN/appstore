@@ -1,0 +1,56 @@
+{% extends "default.html" %}
+{% block title %} Frameworks - Candella AppDB {% endblock %}
+{% block content %}
+<div class="p-strip--suru">
+    <div class="row">
+        <h1>Boost your next Candella project</h1>
+        <p>
+            Looking for a framework to boost your upcoming app or core service? Candella AppDB
+            offers a range of frameworks to make your next project shine! From working with 
+            multiple accounts to making apps a little easier to create, the AppDB has the next
+            framework you need to take your project to the next level. Take a look at what developers
+            have shared in the AppDB.
+        </p>
+    </div>
+</div>
+{% if all_apps| length > 0 %}
+<div class="p-strip">
+    <div class="row">
+        {% for project in all_apps %}
+        <div class="col-4">
+            {% include "components/project_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% elif error != None %}
+<div class="p-strip">
+    <div class="row">
+        <h6><i class="p-icon--error">Error:</i> An error occurred when trying to fetch frameworks.</h6>
+        <p>
+            If the issue persists, contact the Candella AppDB curators or report a bug on our
+            repository on GitHub.
+        </p>
+    </div>
+</div>
+{% else %}
+<div class="p-strip">
+    <div class="row">
+        <h6><i class="p-icon--warning">Warning:</i> No frameworks found in the AppDB.</h6>
+        <p>Frameworks may be under review or developers have not added their framework to the AppDB yet.</p>
+    </div>
+</div>
+{% endif %}
+<div class="p-strip--dark">
+    <div class="row">
+        <h2 class="p-heading--3">Are you a developer?</h2>
+        <p>
+            Share your framework with a large audience of users and developers on AppDB. It's free
+            and only takes a few minutes to upload your first release to the AppDB.
+        </p>
+        <p>
+            <a class="p-button--brand" href="{{ url_for('developer.dev_dashboard') }}">Get started &rsaquo;</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

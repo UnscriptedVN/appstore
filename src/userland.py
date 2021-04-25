@@ -5,6 +5,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https: //mozilla.org/MPL/2.0/.
 
+from sys import stderr
 from flask import Blueprint, render_template, abort
 from . import roland as ro
 from .database import connect_database
@@ -23,7 +24,36 @@ def index():
 
 @userland.route("/apps")
 def prod_apps():
-    return render_template("pages/projects.html"), 200
+    try:
+        all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[ro.projects.ProjectType.App])
+        error = None
+    except Exception as err:
+        all_apps = []
+        error = err
+        print(err, stderr)
+    return render_template("pages/userland/apps.html", apps=all_apps, error=error), 200
+
+@userland.route("/services")
+def services_list():
+    try:
+        all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[ro.projects.ProjectType.CoreService])
+        error = None
+    except Exception as err:
+        all_apps = []
+        error = err
+        print(err, stderr)
+    return render_template("pages/userland/services.html", apps=all_apps, error=error), 200
+
+@userland.route("/frameworks")
+def frameworks_list():
+    try:
+        all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[ro.projects.ProjectType.Framework])
+        error = None
+    except Exception as err:
+        all_apps = []
+        error = err
+        print(err, stderr)
+    return render_template("pages/userland/frameworks.html", apps=all_apps, error=error), 200
 
 
 @userland.route("/lists")
@@ -62,11 +92,10 @@ def project_detail(project_id):
 
 @userland.route("/apps/developer/<int:developer_id>")
 def developer_detail(developer_id: int):
-    # TODO: Return a page instead of the raw data.
     developer = ro.accounts.get_account(connect_database(), developer_id)
     if not developer:
         abort(404)
-    if developer["accounttype"] != ro.accounts.AccountType.Developer:
+    if developer["accounttype"] == ro.accounts.AccountType.UserAccount:
         abort(500)
 
     projects_by_dev = ro.projects.get_projects_by_developer(

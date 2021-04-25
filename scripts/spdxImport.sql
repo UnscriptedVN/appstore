@@ -448,4 +448,4 @@ insert into License (licenseName) values ('psutils');
 insert into License (licenseName) values ('wxWindows');
 insert into License (licenseName) values ('xinetd');
 insert into License (licenseName) values ('xpp');
-insert into License (licenseName) values ('zlib-acknowledgement'
+insert into License (licenseName) values ('zlib-acknowledgement');

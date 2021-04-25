@@ -61,7 +61,7 @@ def create_list(in_app_db, list_name: str, list_blurb: str, list_apps, with_cura
                 cursor.execute(command, [new_id["listid"], project])
         
         in_app_db.commit()
-        return new_id.listid
+        return new_id["listid"]
 
 def update_list(in_app_db, list_id, new_name, new_blurb):
     with DatabaseContext(in_app_db) as cursor:

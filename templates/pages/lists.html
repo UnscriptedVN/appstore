@@ -1,12 +1,12 @@
 {% extends "default.html" %}
 {% block title %}Curated Lists - Candella AppDB{% endblock %}
 {% block content %}
-<div class="p-strip--suru-topped">
+<div class="p-strip--suru">
     <div class="row">
-        <h1>Curated lists</h1>
+        <h1>Need a recommendation?</h1>
         <p>
-            The following lists have been curated by the Candella AppDB team. Check them
-            out and find your next favorite project!
+            The Candella AppDB team has curated and devised some lists which may be of interest
+            to you. Check out what some of our recommendations are!
         </p>
     </div>
 </div>
@@ -14,6 +14,7 @@
 <div id="rxw-curated-list__id-{{ list.listid }}" class="p-strip is-shallow">
     <div class="row">
         <h2>{{ list.name }}</h2>
+        <p>{{ list.blurb | truncate(80) }}</p>
         <p><a class="p-button" href="{{ url_for('userland.list_detail', id=list.listid) }}">Show more &rsaquo;</a></p>
     </div>
     <div class="row">

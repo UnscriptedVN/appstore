@@ -6,22 +6,20 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #}
-<div class="p-strip is-shallow">
-    <div class="cc-project-list row" id="project-list-entry__id-{{ project.id }}">
-        <img class="cc-project-list__icon"
-            src="{{ project.icon }}"
-            alt="{{ project.name }} icon">
-        <div class="cc-project-list__info">
-            <p class="cc-project-list__title p-heading--3">{{ project.name }}</p>
-            <p class="cc-project-list__id p-heading--5 u-text--muted">{{ project.id }}</p>
-            <p class="cc-project-list__revision">Latest revision: {{ project.latest_version }}</p>
-        </div>
-        <div class="cc-project-list__actions">
-            {% if action == "review" %}
-            <p><a class="p-button" href="{{ url_for('cur_inspect_project', id=project.id) }}">Review</a></p>
-            {% else %}
-            <p><a class="p-button" href="{{ url_for('dev_edit_project', id=project.id) }}">Manage</a></p>
-            {% endif %}
-        </div>
+<div class="cc-project-list row" id="project-list-entry__id-{{ project.id }}">
+    <img class="cc-project-list__icon"
+        src="{% if project.icon %}{{ project.icon }}{% else %}{{ url_for('static', filename='img/default_project.png') }}{% endif %}"
+        alt="{{ project.name }} icon">
+    <div class="cc-project-list__info">
+        <p class="cc-project-list__title p-heading--3">{{ project.name }}</p>
+        <p class="cc-project-list__id p-heading--5 u-text--muted">{{ project.id }}</p>
+        <p class="cc-project-list__revision">Latest revision: {{ project.latest_version }}</p>
+    </div>
+    <div class="cc-project-list__actions">
+        {% if action == "review" %}
+        <p><a class="p-button" href="{{ url_for('curator.inspect_project', id=project.id) }}">Review</a></p>
+        {% else %}
+        <p><a class="p-button" href="{{ url_for('developer.edit_project', id=project.id) }}">Manage</a></p>
+        {% endif %}
     </div>
 </div>

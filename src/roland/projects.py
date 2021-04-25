@@ -4,8 +4,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from warnings import warn
 from typing import Optional
 from .utils import DatabaseContext
+from . import licensing, releases
 from psycopg2.extras import RealDictCursor, RealDictRow
 from psycopg2.sql import SQL
 from enum import IntEnum
@@ -25,32 +27,33 @@ def _transform_project_data(project: RealDictRow, appdb=None) -> RealDictRow:
     
     # Re-map project fields for API.
     new_project["id"] = new_project["projectid"]
-    new_project["latest_version"] = new_project["version"]
     new_project["license"] = get_project_license(appdb, new_project["licenseid"])
     new_project["icon"] = new_project["projecticon"]
-    del new_project["projectid"]
-    del new_project["version"]
-    del new_project["projecticon"]
-    del new_project["licenseid"]
 
     # Add new fields based on context.
     new_project["developer"] = get_developer(appdb, new_project["id"])["userid"]
-    new_project["releases"] = get_releases(appdb, new_project["id"])
+    new_project["releases"] = get_app_releases(appdb, new_project["id"])
+    new_project["latest_version"] = new_project["releases"][0]["version"] if new_project["releases"] else None
+    
     new_project["screenshots"] = get_screenshots(appdb, new_project["id"])
     new_project["permissions"] = get_project_permissions(
         appdb, new_project["id"])
     
+    del new_project["projectid"], new_project["version"], new_project["projecticon"], new_project["licenseid"]
+    
     new_project["type"] = str(ProjectType(new_project["type"]).name).lower()
+    if new_project["type"] == "coreservice":
+        new_project["type"] = "core service"
     return new_project
 
-def list_projects(in_app_db) -> list:
+
+def list_projects(in_app_db, filter_by_type=[ProjectType.App, ProjectType.Framework, ProjectType.CoreService]) -> list:
     """Returns a list of all projects."""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
         cur.execute('select * from Project')
         data = cur.fetchall().copy()
-    projects = []
-    for project in data:
-        projects.append(_transform_project_data(project, in_app_db))
+    projects = [_transform_project_data(project, in_app_db) for project in data if \
+        ProjectType(project["type"]) in filter_by_type]
     return projects
 
 def get_project(in_app_db, project_id: str) -> dict:
@@ -61,12 +64,12 @@ def get_project(in_app_db, project_id: str) -> dict:
         real_project_data = _transform_project_data(cur.fetchone(), in_app_db)
     return real_project_data
 
-def get_releases(in_app_db, project_id: str) -> dict:
-    """Returns a list of releases for a given project ID."""
+def get_app_releases(in_app_db, project_id: str) -> list:
+    """Returns a list of approved releases for a given project ID."""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
-        comm = SQL("select * from Release where projectId = %s")
-        cur.execute(comm, [project_id])
-        return cur.fetchall()
+        comm = SQL("select * from Release where projectId = %s and inspectStatus = %s order by inspectDate desc")
+        cur.execute(comm, [project_id, releases.ReleaseStatus.Approved.value])
+        return [releases.transform_release_row(row) for row in cur.fetchall()]
 
 def get_screenshots(in_app_db, project_id: str) -> list:
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
@@ -97,14 +100,8 @@ def get_dependencies(in_app_db, project_id: str) -> dict:
         return cur.fetchall()
 
 def get_project_license(in_app_db, license_id) -> Optional[str]:
-    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
-        command = SQL("select licenseName from License where licenseId = %s")
-        cursor.execute(command, [license_id])
-        result = cursor.fetchone()
-
-    if not result:
-        return None
-    return result["licensename"]
+    warn("This method has been moved to the licensing submodule.", DeprecationWarning)
+    return licensing.get_project_license(in_app_db, license_id)
 
 def get_project_permissions(in_app_db, project_id: str) -> list:
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:

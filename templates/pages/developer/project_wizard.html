@@ -1,0 +1,61 @@
+{% extends "default.html" %}
+{% block title %}Create a new project - Candella AppDB{% endblock %}
+{% block content %}
+<div class="p-strip--suru-topped is-branded">
+    <div class="row">
+        <p>
+            <a class="p-button" href="{{ url_for('developer.dev_dashboard') }}">&lsaquo; Back to dashboard</a>
+        </p>
+        <h2>Create a new project</h2>
+        <p>
+            Tell us a bit about your project. Fill out the form below to create a new project,
+            then click "Create" to create the project. You'll be able to edit information about
+            this project and upload releases once this step is complete.
+        </p>
+    </div>
+<!-- </div>
+<div class="p-strip is-shallow"> -->
+    <form class="p-form p-form--stacked" action="{{ url_for('developer.create_project_request') }}" method="POST">
+        <div class="p-form__group row">
+            <div class="col-5">
+                <label for="projectName">Project name</label>
+            </div>
+            <div class="col-7">
+                <input type="text" name="name" id="projectName" placeholder="Brand new project">
+            </div>
+
+            <div class="col-5">
+                <label for="projectType">What kind of project is this?</label>
+            </div>
+            <div class="col-7">
+                <select name="type" id="projectType">
+                    <option value="0">App (default)</option>
+                    <option value="1">Core Service</option>
+                    <option value="2">Framework</option>
+                </select>
+            </div>
+            <div class="col-5">
+                <label for="projectId">Project identifier</label>
+            </div>
+            <div class="col-7">
+                <input style="margin-bottom: 0;"type="text" name="id" id="projectId" placeholder="com.example.my-great-project">
+                <p style="padding-top: 2px;">
+                    <small><b>Note:</b> Your project identifier must be in 
+                        <a class="p-link--external" href="https://en.wikipedia.org/wiki/Reverse_domain_name_notation"> reverse domain name notation</a>.</small>
+                    </p>
+                </div>
+                
+            <div class="col-5">
+                <label for="projectDescription">Give a tagline your project</label>
+            </div>
+            <div class="col-7">
+                <input type="text" name="blurb" id="projectDescription" placeholder="A shiny new app">
+            </div>
+
+            <div class="col-4">
+                <button class="p-button--positive" type="submit">Create project</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

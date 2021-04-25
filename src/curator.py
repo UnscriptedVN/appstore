@@ -75,3 +75,8 @@ def delete_list_request():
     except Exception as error:
         print(error)
         abort(500)
+
+@curator.route("/projects/<string:id>/inspect")
+def inspect_project(id: str):
+    _verify_curator()
+    return "200", 200
