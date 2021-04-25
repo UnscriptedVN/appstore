@@ -125,7 +125,7 @@
         <section class="p-modal__dialog" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-description">
             <header class="p-modal__header">
                 <h2 class="p-modal__title" id="modal-title">Confirm delete</h2>
-                <button class="p-modal__close" aria-label="Close active modal" aria-controls="modal">Close</button>
+                <button class="p-modal__close" aria-label="Close active modal" aria-controls="delete-modal">Close</button>
             </header>
             <p>Are you sure you want to delete the project "{{ project.name }}"? This action is permanent and cannot be
                 undone.
@@ -133,7 +133,7 @@
             <footer class="p-modal__footer">
                 <form action="{{ url_for('developer.delete_project', id=project.id) }}" method="POST">
                     <input type="hidden" name="id" value="{{ project.id }}">
-                    <button type="menu" class="u-no-margin--bottom" aria-controls="modal">Cancel</button>
+                    <button type="reset" class="u-no-margin--bottom" aria-controls="delete-modal">Cancel</button>
                     <button type="submit" class="p-button--negative u-no-margin--bottom">Delete</button>
                 </form>
             </footer>
