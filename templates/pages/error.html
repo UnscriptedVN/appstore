@@ -7,34 +7,55 @@
     file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #}
 {% extends "default.html" %}
+{% block title %}🥥 Error ({{ errcode }})- Candella AppDB{% endblock %}
 {% block content %}
-<div class="p-strip--suru-topped">
-    <div class="cc-error-header">
-        <h1><code>{{ errcode }}</code></h1>
-    </div>
-</div>
-<div class="p-strip is-shallow">
-    <div class="row">
-        <div class="col-7">
-            <h2>Whoops!</h2>
-            <p class="u-text--muted">
+<section class="p-strip--image is-dark is-deep"
+    style="background-image:url('{{ url_for('static', filename='img/error.png') }}')">
+    <div class="row u-vertically-center">
+        <div class="col-7 p-card--overlay">
+            {% if errcode == 404 %}
+            <h1>Page not found</h1>
+            <p>
+                We couldn't find the page you're looking for on the AppDB. Verify that the URL path
+                to the page is spelled correctly or that the URL is valid.
+            </p>
+            <p><a href="{{ url_for('userland.index') }}" class="p-button p-button--brand">Go to homepage</a></p>
+            <hr />
+            <p class="u-text--muted" id="rxw-js__err">
+                Still seeing this page? The page you're looking for may have been moved or deleted.
+            </p>
+            {% elif errcode == 401 %}
+            <h1>Authentication required</h1>
+            <p>
+                This page requires authenticated access to Candella AppDB. Please login to your Candella
+                AppDB account to access this page.
+            </p>
+            <p>
+                Don't have an account? It only takes a couple minutes to create an account using GitHub.
+            </p>
+            <p><a href="{{ url_for('auth.auth_login') }}" class="p-button p-button--brand">Log into AppDB &rsaquo;</a><a href="{{ url_for('userland.index') }}" class="p-button">Go to homepage</a></p>
+            <hr />
+            <p class="u-text--muted" id="rxw-js__err">
+                Still seeing this page? You may not have the required permissions to view this page.
+            </p>
+            {% else %}
+            <h1>Whoops!</h1>
+            <p>
                 We apologize for the inconvenience, but it appears an error has occured.
                 You may want to verify that the URL is correct and that the page exists
                 before trying again.
             </p>
-            <p><a href="{{ url_for('userland.index') }}" class="p-button">Go to homepage</a></p>
-            <hr/>
+            <p>
+                Please, take a complimentary coconut: &#129381;
+            </p>
+            <p><a href="{{ url_for('userland.index') }}" class="p-button p-button--brand">Go to homepage</a></p>
+            <hr />
             <p class="u-text--muted" id="rxw-js__err">
                 If you are a developer or curator using the API, you may want to view the request
                 details in your browser's inspector.
             </p>
-        </div>
-        <div class="col-5">
-            <figure>
-                <img src="{{ url_for('static', filename='img/404.png') }}" alt="Page not found" />
-                <figcaption>What are you doing bro?</figcaption>
-            </figure>
+            {% endif %}
         </div>
     </div>
-</div>
+</section>
 {% endblock %}

@@ -69,7 +69,7 @@ def prod_lists():
 @userland.route("/search")
 def prod_search():
     # FIXME: Implement this page.
-    abort(404)
+    abort(500)
 
 
 @userland.route("/apps/<string:project_id>")
