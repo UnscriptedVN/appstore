@@ -170,6 +170,13 @@
         <div class="row">
             <h2 class="p-heading--3">Previous releases</h2>
         </div>
+        {% for release in releases %}
+        <div class="row" id="rxw_project-release__{{ release.version }}">
+            <h3 class="p-heading--4">{{ release.version }}</h3>
+            <p class="u-text--muted"><i class="p-icon--success"></i> Published on {{ release.release_date.strftime('%d %B %Y at %H:%M %p') }}</p>
+            <p>{{ release.notes }}</p>
+        </div>
+        {% endfor %}
     </div>
     {% elif tab == "messages" %}
     <div class="row">
