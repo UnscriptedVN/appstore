@@ -65,9 +65,10 @@ def edit_project(id: str):
 @developer.route("/projects/<string:id>/releases")
 def edit_project_releases(id: str):
     project = ro.projects.get_project(connect_database(), id)
+    previous_releases = ro.projects.get_app_releases(connect_database(), id)
     if not project:
         abort(500)
-    return render_template("pages/developer/project_editor.html", project=project, tab="releases"), 200
+    return render_template("pages/developer/project_editor.html", project=project, releases=previous_releases, tab="releases"), 200
 
 @developer.route("/projects/<string:id>/messages")
 def edit_project_messages(id: str):
