@@ -26,4 +26,15 @@
     </div>
 </div>
 {% endfor %}
+{% if lists | length < 1 %}
+<div class="p-strip">
+    <div class="row" id="rxw-lists__missing-lists">
+        <p class="p-heading--6"><i class="p-icon--warning"></i> No curated lists were found.</p>
+        <p>
+            It may be possible that curators are still analyzing the projects on this AppDB and creating lists.
+            Refresh the page or visit this page at a later time.
+        </p>
+    </div>
+    </div>
+{% endif %}
 {% endblock %}

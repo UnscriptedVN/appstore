@@ -1,10 +1,10 @@
 {#
-    Featured Project Jumbotron Template
-    (C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+Featured Project Jumbotron Template
+(C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
 
-    This Source Code Form is subject to the terms of the Mozilla Public
-    License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at https://mozilla.org/MPL/2.0/.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #}
 <div class="p-strip p-strip--suru cc-jumbotron" id="featured-project">
     <div class="row">
@@ -13,14 +13,15 @@
             <h2 class="project-title">{{ project.name }}</h2>
             <p>{% if project.blurb %}{{ project.blurb }}{% else %}{{ project.description }}{% endif %}</p>
             <p>
-                <a class="p-button--brand" href="{{ url_for('userland.project_detail', project_id=project.id) }}">Get</a>
+                <a class="p-button--brand"
+                    href="{{ url_for('userland.project_detail', project_id=project.id) }}">Get</a>
             </p>
         </div>
-        <div class="col-5">
-            {% if "screenshots" in project %}
+        <div class="col-5" style="text-align: center;">
+            {% if project.screenshots | length > 0 %}
             <img src="{{ project.screenshots[0] }}" alt="Featured project image">
             {% else %}
-            <img src="{{ project.icon }}" alt="Featured project icon">
+            <img src="{{ project.icon }}" alt="Featured project icon" style="width: 50%;">
             {% endif %}
         </div>
     </div>

@@ -1,20 +1,62 @@
 {#
-    Homepage
-    (C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+Homepage
+(C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
 
-    This Source Code Form is subject to the terms of the Mozilla Public
-    License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at https://mozilla.org/MPL/2.0/.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #}
 {% extends "default.html" %}
 {% block title %}Homepage - Candella AppDB{% endblock %}
 {% block content %}
+{% if featured %}
 {% with project=featured %}
-    {% include "components/jumbotron.html" %}
+{% include "components/jumbotron.html" %}
 {% endwith %}
-<div class="p-strip">
-
+{% else %}
+<div class="p-strip--suru">
+    <div class="row">
+        <div class="col-8">
+            <h1>The latest and greatest projects, now at your fingertips</h1>
+            <p>
+                The Candella AppDB lets you find new apps, core services, and frameworks
+                that will expand any of your Candella installations. Our curated project
+                database will let you find the next app to make Candella work for you.
+            </p>
+        </div>
+        <div class="col-4" style="text-align: center;">
+            <img src="{{ url_for('static', filename='img/sprite.svg') }}" alt="Candella" style="width: 50%;" />
+        </div>
+    </div>
 </div>
+{% endif %}
+{% if lists and lists | length > 0 %}
+{% for list in lists %}
+<div class="p-strip" id="rxw-homepage__list-{{ list.listid }}">
+    <div class="row">
+        <h2>{{ list.name }}</h2>
+        <p>{{ list.blurb | truncate(100) }}</p>
+        <p><a class="p-button" href="{{ url_for('userland.list_detail', id=list.listid) }}">Show more &rsaquo;</a></p>
+    </div>
+    <div class="row">
+        {% for project in l_projs[list.listid][:3] %}
+        <div class="col-4">
+            {% include "components/project_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="p-strip">
+    <div class="row" id="rxw-homepage__missing-lists">
+        <p class="p-heading--6"><i class="p-icon--warning"></i> No recommended curated lists were found.</p>
+        <p>
+            For a comprehensive list of recommendations, visit the Recommendations section of the AppDB.
+        </p>
+    </div>
+</div>
+{% endif %}
 <div class="p-strip--dark">
     <div class="row">
         <h2 class="p-heading--3">Are you a developer?</h2>
