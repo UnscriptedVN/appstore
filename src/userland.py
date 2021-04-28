@@ -8,24 +8,31 @@
 from sys import stderr
 from flask import Blueprint, render_template, abort
 from . import roland as ro
-from .database import connect_database
+from .database import connect_database, frontpage_config
 
-userland = Blueprint("userland", __name__, template_folder="../templates", static_folder="../static")
+userland = Blueprint("userland", __name__,
+                     template_folder="../templates", static_folder="../static")
 
 
 @userland.route("/")
 def index():
     # if not connect_database():
     #     return __database_failure()
+    fconfig = frontpage_config()
     featured = ro.projects.get_project(
-        connect_database(), "dev.unscriptedvn.candella.celeste-shell")
-    return render_template("pages/index.html", featured=featured), 200
+        connect_database(), fconfig["featured_project"])
+    lists = [l for l in ro.lists.get_all_curator_lists(
+        connect_database()) if l["name"] in fconfig["featured_lists"]]
+    l_projects = {l["listid"]: ro.lists.get_projects_from_list(
+        connect_database(), l["listid"]) for l in lists}
+    return render_template("pages/index.html", featured=featured, lists=lists, l_projs=l_projects), 200
 
 
 @userland.route("/apps")
 def prod_apps():
     try:
-        all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[ro.projects.ProjectType.App])
+        all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
+                                             ro.projects.ProjectType.App])
         error = None
     except Exception as err:
         all_apps = []
@@ -33,10 +40,12 @@ def prod_apps():
         print(err, stderr)
     return render_template("pages/userland/apps.html", apps=all_apps, error=error), 200
 
+
 @userland.route("/services")
 def services_list():
     try:
-        all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[ro.projects.ProjectType.CoreService])
+        all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
+                                             ro.projects.ProjectType.CoreService])
         error = None
     except Exception as err:
         all_apps = []
@@ -44,10 +53,12 @@ def services_list():
         print(err, stderr)
     return render_template("pages/userland/services.html", apps=all_apps, error=error), 200
 
+
 @userland.route("/frameworks")
 def frameworks_list():
     try:
-        all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[ro.projects.ProjectType.Framework])
+        all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
+                                             ro.projects.ProjectType.Framework])
         error = None
     except Exception as err:
         all_apps = []

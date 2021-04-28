@@ -6,6 +6,7 @@
 
 # Ignore data-sensitive environment files.
 .env
+frontpage.json
 
 # Note: This is required if supporting multiple Python versions.
 Pipfile.lock

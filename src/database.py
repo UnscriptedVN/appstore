@@ -19,3 +19,14 @@ def close_database():
     database = gblspace.pop("database", None)
     if database is not None:
         database.close()
+
+
+def frontpage_config() -> dict:
+    if "frontpage" not in gblspace:
+        gblspace.frontpage = current_app.config["FRONTPAGE_CONFIG"]
+    return gblspace.frontpage
+
+
+def pop_frontpage():
+    gblspace.pop("frontpage", None)
+

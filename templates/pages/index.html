@@ -30,6 +30,24 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
     </div>
 </div>
 {% endif %}
+{% if lists and lists | length > 0 %}
+{% for list in lists %}
+<div class="p-strip" id="rxw-homepage__list-{{ list.listid }}">
+    <div class="row">
+        <h2>{{ list.name }}</h2>
+        <p>{{ list.blurb | truncate(100) }}</p>
+        <p><a class="p-button" href="{{ url_for('userland.list_detail', id=list.listid) }}">Show more &rsaquo;</a></p>
+    </div>
+    <div class="row">
+        {% for project in l_projs[list.listid][:3] %}
+        <div class="col-4">
+            {% include "components/project_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+{% else %}
 <div class="p-strip">
     <div class="row" id="rxw-homepage__missing-lists">
         <p class="p-heading--6"><i class="p-icon--warning"></i> No recommended curated lists were found.</p>
@@ -38,6 +56,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.
         </p>
     </div>
 </div>
+{% endif %}
 <div class="p-strip--dark">
     <div class="row">
         <h2 class="p-heading--3">Are you a developer?</h2>
