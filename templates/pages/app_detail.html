@@ -4,7 +4,8 @@
 <div class="p-strip--dark">
     <div class="cc-project-detail row">
         <div>
-            <img src="{% if app.icon %}{{ app.icon }}{% else %}{{ url_for('static', filename='img/default_project.png') }}{% endif %}" class="cc-project-detail--icon" />
+            <img src="{% if app.icon %}{{ app.icon }}{% else %}{{ url_for('static', filename='img/default_project.png') }}{% endif %}"
+                class="cc-project-detail--icon" />
         </div>
         <div class="cc-project-detail--basic_info">
             <p class="p-heading--2">{{ app.name }}
@@ -16,12 +17,10 @@
                 {{ app.description }}
             </p>
             <p>
-                <button class="p-button p-button--accent" onclick="window.location.href='{% if app.releases | length > 0%}{{ app.releases[0].download }}{% else %}#{% endif %}';" 
-                {% if app.releases|length == 0 %}
-                    disabled=""
-                    title="There are no downloadable releases for this project yet."
-                {% endif %}
-                >
+                <button class="p-button p-button--accent"
+                    onclick="window.location.href='{% if app.releases | length > 0%}{{ app.releases[0].download }}{% else %}#{% endif %}';"
+                    {% if app.releases|length==0 %} disabled=""
+                    title="There are no downloadable releases for this project yet." {% endif %}>
                     Get
                 </button>
                 {% if session.get('cuid') == app.developer %}
@@ -45,7 +44,7 @@
     <div class="row">
         {% for screenshot in app.screenshots[:2] %}
         <div class="col-6">
-            <img src="{{ screenshot }}"/>
+            <img src="{{ screenshot }}" />
         </div>
         {% endfor %}
     </div>
@@ -72,33 +71,35 @@
 {% endif %}
 <div class="p-strip">
     <div class="row">
-        <h2 class="p-heading--3">About this app</h2>
+        <h2 class="p-heading--3">About this {{ app.type }}</h2>
         <p>
             {% if app.blurb %}
             {{ app.blurb }}
             {% else %}
-            No description has been provided for this project.
+            No description has been provided for this {{ app.type }}.
             {% endif %}
         </p>
     </div>
 </div>
 <div class="p-strip--light">
     <div class="row">
-        <h2 class="p-heading--3">Project permissions</h2>
+        <h2 class="p-heading--3">Permissions</h2>
         {% if permissions | length > 0 %}
         <p>
-            The developer has noted that this project needs the following permissions to function correctly.
-            You can review these permissions anytime in the App Manager when installed.
+            The developer has noted that this {{ app.type }} needs the following permissions to function correctly.
+            {% if app.type == "app" %}You can review these permissions anytime in the App Manager when installed.{%
+            endif %}
         </p>
         {% for permission in permissions %}
-            <p class="p-heading--4">
-                <i class="p-icon--anchor"></i>&nbsp;{{ permission["readablename"] }}
-            </p>
-            <p>{{ permission["description"] }} </p>
+        <p class="p-heading--4">
+            <i class="p-icon--anchor"></i>&nbsp;{{ permission["readablename"] }}
+        </p>
+        <p>{{ permission["description"] }} </p>
         {% endfor %}
         {% else %}
         <p>
-            <i class="p-icon--success"></i> The developer has not requested any special system permissions for this project.
+            <i class="p-icon--success"></i> The developer has not requested any special system permissions for this
+            {{ app.type }}.
         </p>
         {% endif %}
     </div>
@@ -107,18 +108,18 @@
     <div class="row">
         <h2 class="p-heading--3">Ratings and reviews</h2>
         {# TODO: Add reviews here. #}
-        <p>There are no reviews for this project.</p>
+        <p>There are no reviews for this {{ app.type }}.</p>
     </div>
 </div>
 <div class="p-strip">
     <div class="row">
-        <h2 class="p-heading--3">More from this developer</h2>
+        <h2 class="p-heading--3">More from {{ dev.name }}</h2>
     </div>
     <div class="row">
         {% for project in rel[:3] %}
-            <div class="col-4">
-                {% include "components/project_card.html" %}
-            </div>
+        <div class="col-4">
+            {% include "components/project_card.html" %}
+        </div>
         {% endfor %}
     </div>
 </div>
