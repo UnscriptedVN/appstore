@@ -4,6 +4,7 @@ COPY . .
 
 RUN apt-get update
 RUN python3 -m pip install requests flask psycopg2-binary python-dotenv passlib
+RUN rm .env
 RUN mv docker.env .env
 
 EXPOSE 80
