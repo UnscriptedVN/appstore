@@ -1,4 +1,11 @@
-create table Account (
+-- ddl.sql
+-- (C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+
+-- This Source Code Form is subject to the terms of the Mozilla Public
+-- License, v. 2.0. If a copy of the MPL was not distributed with this
+-- file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+create table if not exists Account(
     userId serial primary key,
     githubId text,
     name text,
@@ -6,12 +13,12 @@ create table Account (
     email text unique check (email ~* '([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})')
 );
 
-create table License(
+create table if not exists License(
     licenseId serial primary key,
     licenseName text
 );
 
-create table Project(
+create table if not exists Project(
     projectId text primary key check (projectId similar to '[a-z]{2,}\.([a-z0-9]+(-[a-z0-9]+)*\.)+([a-z0-9\-]+)'),
     type integer,
     name text,
@@ -23,7 +30,7 @@ create table Project(
     foreign key (licenseId) references License
 );
 
-create table Screenshot(
+create table if not exists Screenshot(
     screenId serial primary key,
     projectId text,
     screenUrl text,
@@ -40,20 +47,20 @@ create table Maintains (
     foreign key (userId) references Account (userId) on delete set null
 );
 
-create table Permission(
+create table if not exists Permission(
     requiredKey text primary key,
     readableName text,
     description text
 );
 
-create table Requires(
+create table if not exists Requires(
     projectId text,
     requiredKey text,
     foreign key (projectId) references Project,
     foreign key (requiredKey) references Permission
 );
 
-create table Reviews(
+create table if not exists Reviews(
     userId serial,
     projectId text,
     date timestamp with time zone,
@@ -63,7 +70,7 @@ create table Reviews(
     foreign key (projectId) references Project
 );
 
-create table List(
+create table if not exists List(
     -- Add a trigger to make sure Curator is actually curating lists
     listId serial primary key,
     name text,
@@ -72,7 +79,7 @@ create table List(
     foreign key (userId) references Account
 );
 
-create table Includes(
+create table if not exists Includes(
     listId serial,
     projectId text,
     foreign key (listId) references List,
@@ -92,7 +99,7 @@ create table Release (
     foreign key (userid) references Account
 );
 
-create table DependsOn(
+create table if not exists DependsOn(
     dependentprojectId text,
     projectId text,
     primary key (dependentprojectId, projectId),
