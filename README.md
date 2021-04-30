@@ -19,6 +19,8 @@ The Candella AppDB can be easily deployed to any server via Docker. Ensure that 
 
 Clone the repository from GitHub, then run `docker-compose build` to build the Docker image for the Candella frontend. This will also pull the PostgreSQL image from Docker.
 
+Change the `GITHUB_CLIENT_ID` and `GH_CLIENT_SECRET` fields in the `docker.env` file with the GitHub OAuth app details you are using to deploy AppDB.
+
 Set up the database and run the AppDB containers by running `docker-compose up -d`.
 
 ### Setting up the app manually
