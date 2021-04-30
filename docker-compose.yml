@@ -1,0 +1,30 @@
+version: "3.6"
+
+services:
+  database:
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: rxw-docker
+      POSTGRES_DB: appdb__docker
+    image: postgres:latest
+    networks:
+      - default
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - ./psql_data:/var/lib/postgresql/data
+      - ./scripts/ddl.sql:/docker-entrypoint-initdb.d/ddl.sql
+      - ./scripts/defaults.sql:/docker-entrypoint-initdb.d/defaults.sql
+      - ./scripts/spdxImport.sql:/docker-entrypoint-initdb.d/spdxImport.sql
+  candella:
+    environment:
+      FLASK_APP: "src/appdb.py"
+    build: .
+    depends_on:
+      - database
+    networks:
+      - default
+    ports:
+      - 80:80
+    restart: always

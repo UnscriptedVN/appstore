@@ -7,6 +7,7 @@
 # Ignore data-sensitive environment files.
 .env
 frontpage.json
+psql_data/
 
 # Note: This is required if supporting multiple Python versions.
 Pipfile.lock
