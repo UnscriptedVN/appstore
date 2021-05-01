@@ -22,10 +22,11 @@ GH_CLIENT_ID = getenv("GH_CLIENT_ID")
 GH_CLIENT_SECRET = getenv("GH_CLIENT_SECRET")
 
 # Frontpage configuration
-with open("frontpage.json", "r") as config_file:
-    FRONTPAGE_CONFIG = load(config_file)
-
-if not FRONTPAGE_CONFIG:
+try:
+    with open("frontpage.json", "r") as config_file:
+        FRONTPAGE_CONFIG = load(config_file)
+except FileNotFoundError:
+    print("No config file was found. Skipping config read.")
     FRONTPAGE_CONFIG = {}
 
 if "featured_project" not in FRONTPAGE_CONFIG:
