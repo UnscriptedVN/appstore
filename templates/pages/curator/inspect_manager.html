@@ -1,0 +1,83 @@
+{% extends "default.html" %}
+{% block title %}Inspect Project - Candella AppDB{% endblock %}
+{% block content %}
+<div class="p-strip--suru-topped is-branded">
+    <div class="row">
+        <p><a class="p-button" href="{{ url_for('curator.cur_dashboard') }}">&lsaquo; Back to dashboard</a></p>
+        <p>
+            Below is a summary of what the developer has listed for this release submission. 
+            Click “Approve” to approve the submission and automatically release it to the AppDB, or click ”Reject...” 
+            to reject the submission 
+            and specify the reason for rejection.
+        </p>
+    </div>
+    <div class="cc-project-detail row">
+        <div>
+            <img src="{% if project.icon %}{{ project.icon }}{% else %}{{ url_for('static', filename='img/default_project.png') }}{% endif %}" class="cc-project-detail--icon" />
+        </div>
+        <div class="cc-project-detail--basic_info">
+            <p class="p-heading--2">{{ project.name }}
+                {% if release[0].version %}
+                <span class="p-heading--4 u-text--muted">v{{ release[0].version }}</span>
+                {% endif %}
+            </p>
+            <p>
+                <a class="p-button--neutral" href='{% if release[0].downloadurl%}{{ release[0].downloadurl }}{% else %}#{% endif %}' target = "blank" 
+                {% if not release[0].downloadurl %}
+                    disabled=""
+                    title="There is no downloadable for this release"
+                {% endif %}
+                >
+                    Download Release
+            </a>
+                <a class="p-button--positive" href = "{{url_for('curator.approve_release', id = release[0].projectid)}}">Approve</a>
+                <button id = "showModal", class = "p-button--negative", aria-controls="rejectRelease">Reject</button>
+            </p>
+            <div class="p-modal" id="rejectRelease", style = "display: none;">
+                <section class="p-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description">
+                  <header class="p-modal__header">
+                    <h2 class="p-modal__title" id="modal-title">Please give reason(s) for rejection</h2>
+                    <button class="p-modal__close" aria-label="Close active modal" aria-controls="rejectRelease">Close</button>
+                  </header>
+                  <p>Please identify the issue(s) with this project, as well as the guidelines these issues violate per the Terms of Service. 
+                      Additionally, you may want to provide suggestions on how to resolve these issues.</p>
+                  <form class="p-form" action = "{{ url_for('curator.reject_release') }}" method="POST">
+                        <input type = "hidden" name = "projectId" value = {{release[0].projectid}}>
+                        <textarea id="textarea" name="textarea" rows="3"></textarea>
+                        <footer class="p-modal__footer">
+                            <button class="p-button--negative u-no-margin--bottom" type = "submit">Reject</button>
+                        </footer>
+                  </form>
+                </section>
+            </div>
+        </div>
+        <div class="cc-project-detail--dev_info">
+            <p class="u-text--muted">{{ project.license }}</p>
+        </div>
+    </div>
+    <div class = 'row'>
+        <h3>What's new in this release</h3>
+        <ul class = "p-list">
+            <!-- Dynamically generate tags here -->
+            <li class = "p-list__item is-ticked">{{release[0].notes}}</li>
+        </ul>
+    </div>
+    <div class="row">
+        <h3 class="p-heading--3">Project permissions</h3>
+        {% if permissions | length > 0 %}
+        <p>
+            The developer has noted that this project needs the following permissions to function correctly.
+        </p>
+        <ul class="p-list--divided is-split">
+        {% for permission in permissions %}
+            <li class="p-list__item is-ticked">{{permission["readablename"]}}</li>
+        {% endfor %}
+        </ul>   
+        {% else %}
+        <p>
+            <i class="p-icon--success"></i> The developer has not requested any special system permissions for this project.
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

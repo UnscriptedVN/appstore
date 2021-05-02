@@ -4,12 +4,32 @@
 <div class="p-strip--suru-topped is-branded">
     <div class="row">
         <h1>Howdy, {{ curator.name }}.</h1>
+        {% if not projects %}
         <p>
             You currently have no projects waiting for inspection in the queue.
         </p>
+        {%else%}
+        <p>
+            You have projects waiting for your review
+        </p>
+        {%endif%}
         <p>
             <a class="p-button" href="{{ url_for('curator.lists_dashboard') }}">Manage my lists</a>
         </p>
+    </div>
+    <div class = "row">
+        {% for release in projects %}
+        <div class="cc-project-list row" id="release-list-entry__id-{{ release.id }}">
+            <div class="cc-project-list__info">
+                <p class="cc-project-list__title p-heading--3">{{ pending_release_names[release.projectid] }}</p>
+                <p class="cc-project-list__id p-heading--5 u-text--muted">{{ release.projectid }}</p>
+                <p class="cc-project-list__revision">Latest revision: {{ release.version }}</p>
+            </div>
+            <div class="cc-project-list__actions">
+                <p><a class="p-button" href="{{ url_for('curator.inspect_project', id=release.projectid) }}">Review</a></p>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

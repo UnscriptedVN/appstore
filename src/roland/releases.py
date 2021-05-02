@@ -23,12 +23,11 @@ def get_pending_releases(in_app_db) -> dict:
         cursor.execute(command, [ReleaseStatus.PendingReview.value])
         return cursor.fetchall()
 
-
 def transform_release_row(release_row: RealDictRow) -> RealDictRow:
     api_mode = release_row.copy()
-    api_mode["download"] = api_mode["dowloadurl"]
+    api_mode["download"] = api_mode["downloadurl"]
     api_mode["release_date"] = api_mode["inspectdate"]
-    del api_mode["dowloadurl"], api_mode["inspectstatus"], api_mode["userid"], api_mode["projectid"], \
+    del api_mode["downloadurl"], api_mode["inspectstatus"], api_mode["userid"], api_mode["projectid"], \
         api_mode["inspectdate"]
     return api_mode
 
@@ -36,7 +35,7 @@ def transform_release_row(release_row: RealDictRow) -> RealDictRow:
 def create_release(in_app_db, project_id: str, version: str, download: str, notes: str, developer_id):
     with DatabaseContext(in_app_db) as cursor:
         command = SQL(
-            "insert into Release (version, notes, dowloadUrl, projectId, inspectStatus, userId) values (%s, %s, %s, %s, %s, %s)")
+            "insert into Release (version, notes, downloadUrl, projectId, inspectStatus, userId) values (%s, %s, %s, %s, %s, %s)")
         cursor.execute(command, [version, notes, download, project_id, ReleaseStatus.PendingReview.value, developer_id])
         in_app_db.commit()
 
@@ -46,4 +45,25 @@ def assign_release(in_app_db, project_id: str, version: str, to_curator: int):
     with DatabaseContext(in_app_db) as cursor:
         command = SQL("update Release set userId = %s where version = %s and projectId = %s and inspectStatus = %s")
         cursor.execute(command, [to_curator, version, project_id, ReleaseStatus.PendingReview.value])
+        in_app_db.commit()
+        
+def get_release(in_app_db, project_id: str) -> dict:
+    """Get the release waiting review"""
+    with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
+        command = SQL("select * from Release where projectId = %s and inspectStatus = %s")
+        cursor.execute(command, [project_id, ReleaseStatus.PendingReview.value])
+        return cursor.fetchall()
+        
+def approve_release(in_app_db, project_id: str):
+    """Approve release"""
+    with DatabaseContext(in_app_db) as cursor:
+        command = SQL("update Release set inspectStatus = 1, inspectDate = now() where projectId = %s")
+        cursor.execute(command, [project_id])
+        in_app_db.commit()
+
+def reject_release(in_app_db, project_id: str):
+    """Reject release"""
+    with DatabaseContext(in_app_db) as cursor:
+        command = SQL("update Release set inspectStatus = 2, inspectDate = now() where projectId = %s")
+        cursor.execute(command, [project_id])
         in_app_db.commit()
