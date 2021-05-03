@@ -22,10 +22,8 @@ def _verify_curator():
 
 @curator.route("/dashboard")
 def cur_dashboard():
+    #Future TODO: Implement dynamic way to assign pending release to a curator
     account = _verify_curator()
-    ###THIS IS FOR TESTING!!!!
-    ro.releases.assign_release(connect_database(),"dev.unscriptedvn.candella.celeste-shell","1", int(session.get("cuid")))
-    ###REMOVE BEFORE RELEASE!!!
     pending_release = ro.releases.get_pending_releases(connect_database())
     pending_release_names = {}
     if (pending_release):
