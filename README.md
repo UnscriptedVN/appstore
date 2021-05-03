@@ -11,10 +11,21 @@ The **Candella Application Database (AppDB)** is an app store for projects writt
 - PostgreSQL (on macOS, `brew install postgresql`; for Ubuntu/Debian, `apt install postgres-12`)
 - Pipenv
 - Python 3.8 or greater
+- (Optional, but recommended) Docker and Docker Compose
+
+### Setting up the app via Docker
+
+The Candella AppDB can be easily deployed to any server via Docker. Ensure that you have Docker and Docker Desktop installed before setting up AppDB with Docker.
+
+Clone the repository from GitHub, then run `docker-compose build` to build the Docker image for the Candella frontend. This will also pull the PostgreSQL image from Docker.
+
+Change the `GITHUB_CLIENT_ID` and `GH_CLIENT_SECRET` fields in the `docker.env` file with the GitHub OAuth app details you are using to deploy AppDB.
+
+Set up the database and run the AppDB containers by running `docker-compose up -d`.
+
+### Setting up the app manually
 
 Ensure that you have the PostgreSQL dependencies installed before starting. Clone the repository and run `pipenv install` to install the dependencies needed to run the project.
-
-## Setting up the app
 
 You'll need to create an app on GitHub to support GitHub-based logins, as the database does not store passwords or have its own account system. Create an environment file called `.env` in the root of the project with the same fields as listed in `example.env`.
 
@@ -26,11 +37,11 @@ Before running the app, open the `psql` client in the database specified in your
 
 > :information: In the future, this may be replaced with a Python setup script.
 
-To run the application as-is, run `pipenv run dev`. You'll need to authenticated with the database by heading to the following address in your browser:
+To run the application as-is, run `pipenv run dev`.
 
-```
-https://localhost:23526/auth/login
-```
+### Create the administrator account
+
+You'll need to authenticated with the database by heading to the path `/auth/login` at the URL for the AppDB in your browser.
 
 This will create the first account in the database. To access the developer and curator dashboards, run the following commands in `psql`:
 
@@ -39,7 +50,9 @@ select id from Account; -- This will fetch your user ID.
 update Account set accountType = 2 where userId = -1; -- Replace -1 with your user ID from the prev. command.
 ```
 
-## Configure the homepage
+> Note: If you ran setup with Docker, you'll need to launch a shell inthe database container to access psql. Additionally, you'll need to supply the following arguments: `-U docker -d appdb__docker`.
+
+### Configure the homepage
 
 To configure the featured project and the lists that appear on the homepage, you'll want to create a `frontpage.json` file and specify the `featured_project` and `featured_lists` fields. You can take a look at `example.frontpage.json` to look at an example.
 
