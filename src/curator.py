@@ -22,8 +22,15 @@ def _verify_curator():
 
 @curator.route("/dashboard")
 def cur_dashboard():
+    #Future TODO: Implement dynamic way to assign pending release to a curator
     account = _verify_curator()
-    return render_template("pages/curator/dashboard.html", curator=account), 200
+    pending_release = ro.releases.get_pending_releases(connect_database())
+    pending_release_names = {}
+    if (pending_release):
+        pending_release = [release for release in pending_release if account["userid"] == release["userid"]]
+        for release in pending_release:
+            pending_release_names[release["projectid"]] = ro.projects.get_project(connect_database(), release["projectid"])["name"]
+    return render_template("pages/curator/dashboard.html", curator=account, projects = pending_release, action = "review", pending_release_names = pending_release_names), 200
 
 @curator.route("/lists")
 def lists_dashboard():
@@ -79,4 +86,31 @@ def delete_list_request():
 @curator.route("/projects/<string:id>/inspect")
 def inspect_project(id: str):
     _verify_curator()
-    return "200", 200
+    project = ro.projects.get_project(connect_database(), id)
+    release = ro.releases.get_release(connect_database(), id)
+    if not project or not release:
+        abort(404)
+    permissions = [] if not project["permissions"] else \
+        [ro.projects.get_permission(connect_database(), val)
+         for val in project["permissions"]]
+    return render_template("pages/curator/inspect_manager.html", project=project, permissions=permissions, release = release)
+
+@curator.route("/projects/<string:id>/approve", methods = ["GET","POST"])
+def approve_release(id: str):
+    _verify_curator()
+    release = ro.releases.get_release(connect_database(), id)
+    if (session.get("cuid") == release[0]["userid"]):
+        ro.releases.approve_release(connect_database(), id)
+        return redirect(url_for("curator.cur_dashboard")), 200
+    else:
+        abort(401)
+
+@curator.route("/projects/reject", methods = ["GET","POST"])
+def reject_release():
+    _verify_curator()
+    release = ro.releases.get_release(connect_database(), request.form["projectId"])
+    if (session.get("cuid") == release[0]["userid"]):
+        ro.releases.reject_release(connect_database(),release[0]["projectid"])
+        return redirect(url_for("curator.cur_dashboard")), 200
+    else:
+        abort(401)

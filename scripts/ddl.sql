@@ -90,7 +90,7 @@ create table Release (
     -- Add a trigger to make sure Curator approved this
     version text primary key,
     notes text,
-    dowloadUrl text,
+    downloadUrl text,
     projectId text,
     inspectDate timestamp with time zone,
     inspectStatus integer check (inspectStatus > -1 and inspectStatus < 3),
