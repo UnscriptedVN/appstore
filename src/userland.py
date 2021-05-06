@@ -6,7 +6,7 @@
 # file, You can obtain one at https: //mozilla.org/MPL/2.0/.
 
 from sys import stderr
-from flask import Blueprint, render_template, abort, jsonify, request, session
+from flask import Blueprint, render_template, abort, jsonify, request, session, url_for
 from werkzeug.utils import redirect
 from . import roland as ro
 from .database import connect_database, frontpage_config
@@ -120,7 +120,7 @@ def developer_detail(developer_id: int):
 @userland.route("/projects/add-review", methods=["GET", "POST"])
 def add_project_review():
     ro.projects.post_review(connect_database(), session.get("cuid"), request.form["project_id"], request.form["rating"], request.form["comments"])
-    return redirect(url_for("userland.project_detail",session.form("project_id")))
+    return redirect(url_for("userland.project_detail", project_id = request.form['project_id']))
 
 @userland.route("/lists/<int:id>")
 def list_detail(id: int):

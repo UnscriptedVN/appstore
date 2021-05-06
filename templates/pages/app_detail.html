@@ -113,9 +113,6 @@
             {% include "components/review_card.html" %}
         </div>
         {% endfor %}
-        <div class = "col-8">
-            <button class = "p-button--accent" id="review-add-btn" aria-label="add review" aria-controls="addreview">Add Reivew</button>
-        </div>
         {%else%}
         <div class = "col-8">
             <span>There are no reviews for this {{ app.type }}. Be the first to leave a review!</span>
@@ -144,6 +141,14 @@
             </section>
         </div>
     </div>
+    {%if reviews%}
+    <div class="row">
+        <div class = "col-8">
+            <button class = "p-button--accent" id="review-add-btn" aria-label="add review" aria-controls="addreview">Add Reivew</button>
+        </div>
+    </div>
+    {%else%}
+    {%endif%}
 </div>
 <div class="p-strip">
     <div class="row">
