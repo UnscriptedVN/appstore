@@ -92,6 +92,13 @@ def get_reviews_by_user(in_app_db, userId: str) -> dict:
         cur.execute(comm, [userId])
         return cur.fetchall()
 
+def post_review(in_app_db, userId: int, project_id: str, rating: int, comments: str):
+    """Post a user review for a given project"""
+    with DatabaseContext(in_app_db) as cur:
+        command = SQL("insert into Reviews (userId, projectId, date, rating, comments) values (%s,%s, now(), %s, %s)")
+        cur.execute(command, [userId, project_id, rating, comments])
+        in_app_db.commit()
+
 def get_dependencies(in_app_db, project_id: str) -> dict:
     """Returns all dependencies of a given project"""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:

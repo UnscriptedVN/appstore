@@ -13,10 +13,10 @@
         </p>
     </div>
 </div>
-{% if all_apps| length > 0 %}
+{% if apps| length > 0 %}
 <div class="p-strip">
     <div class="row">
-        {% for project in all_apps %}
+        {% for project in apps %}
         <div class="col-4">
             {% include "components/project_card.html" %}
         </div>

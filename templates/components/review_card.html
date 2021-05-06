@@ -1,0 +1,16 @@
+{#
+    Review Card Template
+    (C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#}
+
+<div class="p-card">
+    <div>
+        <h3 class = "p-card__title">{{review.rating}}/5</h3>
+        <p class="p-heading--5 u-text--muted cc-project-card__author">{{ reviewer_name[review.userid]}}</p>
+        <p class="p-card__content">{{review.comments}}</p>
+    </div>
+</div>
