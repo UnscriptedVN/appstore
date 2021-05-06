@@ -42,8 +42,8 @@
                   <p>Please identify the issue(s) with this project, as well as the guidelines these issues violate per the Terms of Service. 
                       Additionally, you may want to provide suggestions on how to resolve these issues.</p>
                   <form class="p-form" action = "{{ url_for('curator.reject_release') }}" method="POST">
-                        <input type = "hidden" name = "projectId" value = {{release[0].projectid}}>
-                        <textarea id="textarea" name="textarea" rows="3"></textarea>
+                        <input type = "hidden" name = "projectId" value = {{release[0].projectid }}>
+                        <textarea id="textarea" name="rejectReason" rows="3"></textarea>
                         <footer class="p-modal__footer">
                             <button class="p-button--negative u-no-margin--bottom" type = "submit">Reject</button>
                         </footer>

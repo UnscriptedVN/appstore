@@ -86,7 +86,7 @@ create table if not exists Includes(
     foreign key (projectId) references Project
 );
 
-create table Release (
+create table if not exists Release (
     -- Add a trigger to make sure Curator approved this
     version text primary key,
     notes text,
@@ -97,6 +97,17 @@ create table Release (
     userId serial,
     foreign key (projectId) references Project,
     foreign key (userid) references Account
+);
+
+create table if not exists Message (
+	writeDate timestamp with time zone primary key,
+	userId serial,
+	projectId text,
+	version text,
+	content text,
+	foreign key (userId) references Account,
+	foreign key (projectId) references Project,
+	foreign key (version) references Release
 );
 
 create table if not exists DependsOn(

@@ -100,7 +100,7 @@ def approve_release(id: str):
     _verify_curator()
     release = ro.releases.get_release(connect_database(), id)
     if (session.get("cuid") == release[0]["userid"]):
-        ro.releases.approve_release(connect_database(), id)
+        ro.releases.approve_release(connect_database(), id, release[0]["version"])
         return redirect(url_for("curator.cur_dashboard")), 200
     else:
         abort(401)
@@ -110,7 +110,10 @@ def reject_release():
     _verify_curator()
     release = ro.releases.get_release(connect_database(), request.form["projectId"])
     if (session.get("cuid") == release[0]["userid"]):
-        ro.releases.reject_release(connect_database(),release[0]["projectid"])
+        ro.releases.reject_release(
+			connect_database(), release[0]["projectid"], release[0]["version"], session.get("cuid"),
+			request.form.get("rejectReason", "Please contact the curator team for details.")
+		)
         return redirect(url_for("curator.cur_dashboard")), 200
     else:
         abort(401)
