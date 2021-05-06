@@ -12,6 +12,7 @@ psycopg2-binary = "*"
 passlib = "*"
 python-dotenv = "*"
 requests = "*"
+gunicorn = "*"
 
 [dev-packages]
 autopep8 = "*"
