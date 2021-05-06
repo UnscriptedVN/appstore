@@ -54,16 +54,27 @@ def get_release(in_app_db, project_id: str) -> dict:
         cursor.execute(command, [project_id, ReleaseStatus.PendingReview.value])
         return cursor.fetchall()
         
-def approve_release(in_app_db, project_id: str):
+def approve_release(in_app_db, project_id: str, version: str):
     """Approve release"""
     with DatabaseContext(in_app_db) as cursor:
-        command = SQL("update Release set inspectStatus = 1, inspectDate = now() where projectId = %s")
-        cursor.execute(command, [project_id])
+        command = SQL("update Release set inspectStatus = 1, inspectDate = now() where projectId = %s and version = %s")
+        cursor.execute(command, [project_id, version])
         in_app_db.commit()
 
-def reject_release(in_app_db, project_id: str):
+def reject_release(in_app_db, project_id: str, version: str, curator: int, message:str = "Contact the team."):
     """Reject release"""
     with DatabaseContext(in_app_db) as cursor:
-        command = SQL("update Release set inspectStatus = 2, inspectDate = now() where projectId = %s")
-        cursor.execute(command, [project_id])
+        reject_command = SQL("update Release set inspectStatus = 2, inspectDate = now() where projectId = %s")
+        cursor.execute(reject_command, [project_id])
+        
+        author_message = SQL("Insert into Message values (now(), %s, %s, %s, %s)")
+        cursor.execute(author_message, [curator, project_id, version, message])
+        
         in_app_db.commit()
+        
+def get_messages(in_app_db, project_id: str):
+	"""Returns the action center messages associated with a given project."""
+	with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
+		command = SQL("select * from Message where projectId = %s order by writeDate desc")
+		cursor.execute(command, [project_id])
+		return cursor.fetchall()
