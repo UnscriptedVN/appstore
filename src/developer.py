@@ -75,7 +75,8 @@ def edit_project_messages(id: str):
     project = ro.projects.get_project(connect_database(), id)
     if not project:
         abort(500)
-    return render_template("pages/developer/project_editor.html", project=project, tab="messages"), 200
+    action_messages = ro.releases.get_messages(connect_database(), id)
+    return render_template("pages/developer/project_editor.html", project=project, tab="messages", action=action_messages), 200
 
 
 @developer.route("/projects/<string:id>/reviews")

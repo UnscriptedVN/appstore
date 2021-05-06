@@ -75,6 +75,6 @@ def reject_release(in_app_db, project_id: str, version: str, curator: int, messa
 def get_messages(in_app_db, project_id: str):
 	"""Returns the action center messages associated with a given project."""
 	with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
-		command = SQL("select * from Release where projectId = %s")
+		command = SQL("select * from Message where projectId = %s order by writeDate desc")
 		cursor.execute(command, [project_id])
 		return cursor.fetchall()

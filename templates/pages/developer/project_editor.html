@@ -173,21 +173,34 @@
         {% for release in releases %}
         <div class="row" id="rxw_project-release__{{ release.version }}">
             <h3 class="p-heading--4">{{ release.version }}</h3>
-            <p class="u-text--muted"><i class="p-icon--success"></i> Published on {{ release.release_date.strftime('%d %B %Y at %H:%M %p') }}</p>
+            <p class="u-text--muted"><i class="p-icon--success"></i> Published on {{ release.release_date.strftime('%d %B %Y at %H:%M') }}</p>
             <p>{{ release.notes }}</p>
         </div>
         {% endfor %}
     </div>
     {% elif tab == "messages" %}
     <div class="row">
-        <h2 class="p-heading--3">Messages not available</h2>
-        <p>
-            Action Center messages are currently unavailable in this prerelease build of the Candella
-            AppDB.
-        </p>
-        <p>
-            To view recent submission rejections, review the release status on the Releases tab.
-        </p>
+		{% if action | length > 0 %}
+		{% for message in action %}
+		<div id="rxw-action__{{ message.projectid }}-{{ message.version }}">
+			<h2 class="p-heading--3">Release {{ message.version }} rejected</h2>
+			<p class="u-text--muted">Written on {{ message.writedate.strftime('%d %B %Y at %H:%M') }}</p>
+			<p>
+				<i class="p-icon--error"></i> Your release submission for version {{ message.version }} has been rejected for
+				one or more reasons. Please view the following details from the curator team below on how to resolve this
+				issue and resubmit the release.
+			</p>
+			<p><blockquote>{{ message.content }}</blockquote></p>
+		</div>
+		<hr/>
+		{% endfor %}
+		{% else %}
+		<h2 class="p-heading--3">No action center messages found</h2>
+		<p>
+			Action Center messages will appear here if you have submitted releases that were rejected by the curator
+			team.
+		</p>
+		{% endif %}
     </div>
     {% elif tab == "reviews" %}
     <div class="row">
