@@ -83,7 +83,11 @@ def edit_project_reviews(id: str):
     project = ro.projects.get_project(connect_database(), id)
     if not project:
         abort(500)
-    return render_template("pages/developer/project_editor.html", project=project, tab="reviews"), 200
+    reviews = ro.projects.get_reviews(connect_database(), id)
+    reviewer_name = {}
+    for review in reviews:
+        reviewer_name[review["userid"]] = ro.accounts.get_account(connect_database(), review["userid"])["name"]
+    return render_template("pages/developer/project_editor.html", project=project, tab="reviews", reviews = reviews,  reviewer_name = reviewer_name), 200
 
 
 @developer.route("/projects/update_information", methods=["GET", "POST"])

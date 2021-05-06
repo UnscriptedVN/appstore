@@ -6,7 +6,8 @@
 # file, You can obtain one at https: //mozilla.org/MPL/2.0/.
 
 from sys import stderr
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, jsonify, request, session
+from werkzeug.utils import redirect
 from . import roland as ro
 from .database import connect_database, frontpage_config
 
@@ -88,7 +89,10 @@ def project_detail(project_id):
     app = ro.projects.get_project(connect_database(), project_id)
     if not app:
         abort(404)
-
+    reviews = ro.projects.get_reviews(connect_database(), project_id)
+    reviewer_name = {}
+    for review in reviews:
+        reviewer_name[review["userid"]] = ro.accounts.get_account(connect_database(), review["userid"])["name"]
     permissions = [] if not app["permissions"] else \
         [ro.projects.get_permission(connect_database(), val)
          for val in app["permissions"]]
@@ -98,7 +102,7 @@ def project_detail(project_id):
         connect_database(), developer["userid"])
 
     return render_template(
-        "pages/app_detail.html", app=app, permissions=permissions, dev=developer, rel=related), 200
+        "pages/app_detail.html", app=app, permissions=permissions, dev=developer, rel=related, reviews = reviews, reviewer_name = reviewer_name), 200
 
 
 @userland.route("/apps/developer/<int:developer_id>")
@@ -113,6 +117,10 @@ def developer_detail(developer_id: int):
         connect_database(), developer["userid"])
     return render_template("pages/dev_detail.html", developer=developer, projects=projects_by_dev), 200
 
+@userland.route("/projects/add-review", methods=["GET", "POST"])
+def add_project_review():
+    ro.projects.post_review(connect_database(), session.get("cuid"), request.form["project_id"], request.form["rating"], request.form["comments"])
+    return redirect(url_for("userland.project_detail",session.form("project_id")))
 
 @userland.route("/lists/<int:id>")
 def list_detail(id: int):

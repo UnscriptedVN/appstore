@@ -107,8 +107,42 @@
 <div class="p-strip">
     <div class="row">
         <h2 class="p-heading--3">Ratings and reviews</h2>
-        {# TODO: Add reviews here. #}
-        <p>There are no reviews for this {{ app.type }}.</p>
+        {%if reviews%}
+        {% for review in reviews %}
+        <div class="col-4">
+            {% include "components/review_card.html" %}
+        </div>
+        {% endfor %}
+        <div class = "col-8">
+            <button class = "p-button--accent" id="review-add-btn" aria-label="add review" aria-controls="addreview">Add Reivew</button>
+        </div>
+        {%else%}
+        <div class = "col-8">
+            <span>There are no reviews for this {{ app.type }}. Be the first to leave a review!</span>
+            <button class = "p-button--accent is-inline" id="review-add-btn" aria-label="add review" aria-controls="addreview">Add Reivew</button>
+        </div>
+        {%endif%}
+        <div class = "p-modal" id = "addreview" style = "display: none;">
+            <section class="p-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description">
+                <header class="p-modal__header">
+                    <h2 class="p-modal__title" id="modal-title">Add Review</h2>
+                    <button class="p-modal__close" aria-label="Close active modal" aria-controls="addreview">Close</button>
+                  </header> 
+                  <form id = "review-form"class="p-form" action = "{{ url_for('userland.add_project_review') }}" method="POST">
+                    <input type = "hidden" name = "project_id" value = "{{app.id}}">
+                    <div class="fieldset">
+                        <label>Rating</label>
+                        <div class="row">
+                         <input type = "text" name = "rating" placeholder="Please give rating out of 5">
+                         <textarea id="textarea" name="comments" rows="3"></textarea>
+                        <footer class="p-modal__footer">
+                            <button class="p-button--accent u-no-margin--bottom" type = "submit">Submit</button>
+                        </footer>
+                        </div>
+                      </div>
+                  </form>
+            </section>
+        </div>
     </div>
 </div>
 <div class="p-strip">

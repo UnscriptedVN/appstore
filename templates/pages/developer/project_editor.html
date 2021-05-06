@@ -192,7 +192,11 @@
     {% elif tab == "reviews" %}
     <div class="row">
         {% if reviews %}
-        {# TODO: Add reviews here #}
+        {% for review in reviews %}
+        <div class="col-4">
+            {% include "components/review_card.html" %}
+        </div>
+        {% endfor %}
         {% else %}
         <p>No reviews for this project are available.</p>
         {% endif %}
