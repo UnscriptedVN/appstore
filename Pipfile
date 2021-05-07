@@ -13,6 +13,7 @@ passlib = "*"
 python-dotenv = "*"
 requests = "*"
 gunicorn = "*"
+commonmark = "*"
 
 [dev-packages]
 autopep8 = "*"

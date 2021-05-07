@@ -5,14 +5,27 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https: //mozilla.org/MPL/2.0/.
 
+from os import path, listdir
 from sys import stderr
-from flask import Blueprint, render_template, abort, jsonify, request, session, url_for
-from werkzeug.utils import redirect
+from flask import Blueprint, render_template, abort, jsonify, request, session, url_for, Markup, redirect
+from commonmark import commonmark
 from . import roland as ro
 from .database import connect_database, frontpage_config
 
 userland = Blueprint("userland", __name__,
                      template_folder="../templates", static_folder="../static")
+
+
+def _retrieve_docs_list():
+    """Returns a dictionary containing the Markdown files in the pages directory.
+
+    The keys correspond to the filenames, excluding the extension, and the values correspond to their HTML title
+        versions.
+    """
+    return {
+        file.replace(".md", ""): file.replace(".md", "").replace("_", " ").title() \
+        for file in listdir("pages") if not file.startswith(".")
+    }
 
 
 @userland.route("/")
@@ -27,6 +40,18 @@ def index():
     l_projects = {l["listid"]: ro.lists.get_projects_from_list(
         connect_database(), l["listid"]) for l in lists}
     return render_template("pages/index.html", featured=featured, lists=lists, l_projs=l_projects), 200
+
+
+@userland.route("/docs/<string:page_name>")
+def documentation(page_name: str):
+    if not path.isfile(f"pages/{page_name}.md"):
+        abort(404)
+    with open(f"pages/{page_name}.md", 'r') as pagefile:
+        content = Markup(commonmark(pagefile.read()))
+
+    docs = _retrieve_docs_list()
+    title = page_name.replace("_", " ").title()
+    return render_template("markdown.html", content=content, title=title, docs=docs), 200
 
 
 @userland.route("/apps")
@@ -78,12 +103,6 @@ def prod_lists():
     return render_template("pages/lists.html", lists=lists, projects=projects_for_lists), 200
 
 
-@userland.route("/search")
-def prod_search():
-    # FIXME: Implement this page.
-    abort(500)
-
-
 @userland.route("/apps/<string:project_id>")
 def project_detail(project_id):
     app = ro.projects.get_project(connect_database(), project_id)
@@ -102,7 +121,8 @@ def project_detail(project_id):
         connect_database(), developer["userid"])
 
     return render_template(
-        "pages/app_detail.html", app=app, permissions=permissions, dev=developer, rel=related, reviews = reviews, reviewer_name = reviewer_name), 200
+        "pages/app_detail.html", app=app, permissions=permissions, dev=developer, rel=related, reviews = reviews,
+        reviewer_name = reviewer_name), 200
 
 
 @userland.route("/apps/developer/<int:developer_id>")
@@ -119,7 +139,8 @@ def developer_detail(developer_id: int):
 
 @userland.route("/projects/add-review", methods=["GET", "POST"])
 def add_project_review():
-    ro.projects.post_review(connect_database(), session.get("cuid"), request.form["project_id"], request.form["rating"], request.form["comments"])
+    ro.projects.post_review(connect_database(), session.get("cuid"), request.form["project_id"], request.form["rating"],
+    request.form["comments"])
     return redirect(url_for("userland.project_detail", project_id = request.form['project_id']))
 
 @userland.route("/lists/<int:id>")
