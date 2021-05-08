@@ -103,17 +103,7 @@ def prod_lists():
     return render_template("pages/lists.html", lists=lists, projects=projects_for_lists), 200
 
 
-<<<<<<< HEAD
-@userland.route("/apps/<string:project_id>")
-=======
-@userland.route("/search")
-def prod_search():
-    # FIXME: Implement this page.
-    abort(500)
-
-
 @userland.route("/apps/<string:project_id>/")
->>>>>>> root
 def project_detail(project_id):
     app = ro.projects.get_project(connect_database(), project_id)
     if not app:
