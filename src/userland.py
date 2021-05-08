@@ -29,7 +29,7 @@ def index():
     return render_template("pages/index.html", featured=featured, lists=lists, l_projs=l_projects), 200
 
 
-@userland.route("/apps")
+@userland.route("/apps/")
 def prod_apps():
     try:
         all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
@@ -42,7 +42,7 @@ def prod_apps():
     return render_template("pages/userland/apps.html", apps=all_apps, error=error), 200
 
 
-@userland.route("/services")
+@userland.route("/services/")
 def services_list():
     try:
         all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
@@ -55,7 +55,7 @@ def services_list():
     return render_template("pages/userland/services.html", apps=all_apps, error=error), 200
 
 
-@userland.route("/frameworks")
+@userland.route("/frameworks/")
 def frameworks_list():
     try:
         all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
@@ -68,7 +68,7 @@ def frameworks_list():
     return render_template("pages/userland/frameworks.html", apps=all_apps, error=error), 200
 
 
-@userland.route("/lists")
+@userland.route("/lists/")
 def prod_lists():
     lists = ro.lists.get_all_curator_lists(connect_database())
     projects_for_lists = {}
@@ -84,7 +84,7 @@ def prod_search():
     abort(500)
 
 
-@userland.route("/apps/<string:project_id>")
+@userland.route("/apps/<string:project_id>/")
 def project_detail(project_id):
     app = ro.projects.get_project(connect_database(), project_id)
     if not app:
@@ -105,7 +105,7 @@ def project_detail(project_id):
         "pages/app_detail.html", app=app, permissions=permissions, dev=developer, rel=related, reviews = reviews, reviewer_name = reviewer_name), 200
 
 
-@userland.route("/apps/developer/<int:developer_id>")
+@userland.route("/apps/developer/<int:developer_id>/")
 def developer_detail(developer_id: int):
     developer = ro.accounts.get_account(connect_database(), developer_id)
     if not developer:
@@ -122,7 +122,7 @@ def add_project_review():
     ro.projects.post_review(connect_database(), session.get("cuid"), request.form["project_id"], request.form["rating"], request.form["comments"])
     return redirect(url_for("userland.project_detail", project_id = request.form['project_id']))
 
-@userland.route("/lists/<int:id>")
+@userland.route("/lists/<int:id>/")
 def list_detail(id: int):
     curated_list = ro.lists.get_one_list(connect_database(), str(id))
     projects = ro.lists.get_projects_from_list(connect_database(), str(id))
