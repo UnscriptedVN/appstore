@@ -56,7 +56,7 @@ def create_list_request():
     
     if not list_id:
         abort(500)
-    return redirect(url_for('curator.lists_dashboard')), 200
+    return redirect(url_for('curator.lists_dashboard'))
 
 @curator.route("/lists/<int:list_id>/manage/")
 def manage_list(list_id: int):
@@ -78,7 +78,7 @@ def delete_list_request():
     _verify_curator()
     try:
         ro.lists.delete_list(connect_database(), request.form["id"])
-        return redirect(url_for('curator.lists_dashboard')), 200
+        return redirect(url_for('curator.lists_dashboard'))
     except Exception as error:
         print(error)
         abort(500)
@@ -101,7 +101,7 @@ def approve_release(id: str):
     release = ro.releases.get_release(connect_database(), id)
     if (session.get("cuid") == release[0]["userid"]):
         ro.releases.approve_release(connect_database(), id, release[0]["version"])
-        return redirect(url_for("curator.cur_dashboard")), 200
+        return redirect(url_for("curator.cur_dashboard"))
     else:
         abort(401)
 
@@ -114,6 +114,6 @@ def reject_release():
 			connect_database(), release[0]["projectid"], release[0]["version"], session.get("cuid"),
 			request.form.get("rejectReason", "Please contact the curator team for details.")
 		)
-        return redirect(url_for("curator.cur_dashboard")), 200
+        return redirect(url_for("curator.cur_dashboard"))
     else:
         abort(401)
