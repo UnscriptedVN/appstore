@@ -20,7 +20,7 @@ def _verify_curator():
         abort(401)
     return acct
 
-@curator.route("/dashboard")
+@curator.route("/dashboard/")
 def cur_dashboard():
     #Future TODO: Implement dynamic way to assign pending release to a curator
     account = _verify_curator()
@@ -32,7 +32,7 @@ def cur_dashboard():
             pending_release_names[release["projectid"]] = ro.projects.get_project(connect_database(), release["projectid"])["name"]
     return render_template("pages/curator/dashboard.html", curator=account, projects = pending_release, action = "review", pending_release_names = pending_release_names), 200
 
-@curator.route("/lists")
+@curator.route("/lists/")
 def lists_dashboard():
     _verify_curator()
     cur_lists = ro.lists.get_curator_lists(connect_database(), session.get("cuid"))
@@ -41,7 +41,7 @@ def lists_dashboard():
         apps[list["listid"]] = ro.lists.get_projects_from_list(connect_database(), list["listid"])
     return render_template("pages/curator/lists_dashboard.html", lists=cur_lists, projs=apps), 200
 
-@curator.route("/lists/create")
+@curator.route("/lists/create/")
 def create_list():
     _verify_curator()
     all_apps = ro.projects.list_projects(connect_database())
@@ -58,7 +58,7 @@ def create_list_request():
         abort(500)
     return redirect(url_for('curator.lists_dashboard')), 200
 
-@curator.route("/lists/<int:list_id>/manage")
+@curator.route("/lists/<int:list_id>/manage/")
 def manage_list(list_id: int):
     edited_list = ro.lists.get_one_list(connect_database(), str(list_id))
     return render_template("pages/curator/list_manager.html", list=edited_list), 200
@@ -83,7 +83,7 @@ def delete_list_request():
         print(error)
         abort(500)
 
-@curator.route("/projects/<string:id>/inspect")
+@curator.route("/projects/<string:id>/inspect/")
 def inspect_project(id: str):
     _verify_curator()
     project = ro.projects.get_project(connect_database(), id)

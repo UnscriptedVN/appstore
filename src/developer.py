@@ -25,13 +25,13 @@ def __verify_developer():
         abort(401)
     return acct
 
-@developer.route("/dashboard")
+@developer.route("/dashboard/")
 def dev_dashboard():
     acct = __verify_developer()
     dev_projects = ro.projects.get_projects_by_developer(connect_database(), acct["userid"])
     return render_template("pages/developer/dashboard.html", developer=acct, projects=dev_projects, action="manage"), 200
 
-@developer.route("/projects/create")
+@developer.route("/projects/create/")
 def create_project():
     __verify_developer()
     return render_template("pages/developer/project_wizard.html"), 200
@@ -53,8 +53,8 @@ def create_project_request():
         print(error, stderr)
         abort(500)
 
-@developer.route("/projects/<string:id>")
-@developer.route("/projects/<string:id>/info")
+@developer.route("/projects/<string:id>/")
+@developer.route("/projects/<string:id>/info/")
 def edit_project(id: str):
     project = ro.projects.get_project(connect_database(), id)
     licenses = ro.licensing.get_all_licenses(connect_database())
@@ -63,7 +63,7 @@ def edit_project(id: str):
     return render_template("pages/developer/project_editor.html", project=project, licenses=licenses, tab="info"), 200
 
 
-@developer.route("/projects/<string:id>/releases")
+@developer.route("/projects/<string:id>/releases/")
 def edit_project_releases(id: str):
     project = ro.projects.get_project(connect_database(), id)
     previous_releases = ro.projects.get_app_releases(connect_database(), id)
@@ -71,7 +71,7 @@ def edit_project_releases(id: str):
         abort(500)
     return render_template("pages/developer/project_editor.html", project=project, releases=previous_releases, tab="releases"), 200
 
-@developer.route("/projects/<string:id>/messages")
+@developer.route("/projects/<string:id>/messages/")
 def edit_project_messages(id: str):
     project = ro.projects.get_project(connect_database(), id)
     if not project:
@@ -80,7 +80,7 @@ def edit_project_messages(id: str):
     return render_template("pages/developer/project_editor.html", project=project, tab="messages", action=action_messages), 200
 
 
-@developer.route("/projects/<string:id>/reviews")
+@developer.route("/projects/<string:id>/reviews/")
 def edit_project_reviews(id: str):
     project = ro.projects.get_project(connect_database(), id)
     if not project:

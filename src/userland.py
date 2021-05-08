@@ -42,7 +42,7 @@ def index():
     return render_template("pages/index.html", featured=featured, lists=lists, l_projs=l_projects), 200
 
 
-@userland.route("/docs/<string:page_name>")
+@userland.route("/docs/<string:page_name>/")
 def documentation(page_name: str):
     if not path.isfile(f"pages/{page_name}.md"):
         abort(404)
@@ -54,7 +54,7 @@ def documentation(page_name: str):
     return render_template("markdown.html", content=content, title=title, docs=docs), 200
 
 
-@userland.route("/apps")
+@userland.route("/apps/")
 def prod_apps():
     try:
         all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
@@ -67,7 +67,7 @@ def prod_apps():
     return render_template("pages/userland/apps.html", apps=all_apps, error=error), 200
 
 
-@userland.route("/services")
+@userland.route("/services/")
 def services_list():
     try:
         all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
@@ -80,7 +80,7 @@ def services_list():
     return render_template("pages/userland/services.html", apps=all_apps, error=error), 200
 
 
-@userland.route("/frameworks")
+@userland.route("/frameworks/")
 def frameworks_list():
     try:
         all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
@@ -93,7 +93,7 @@ def frameworks_list():
     return render_template("pages/userland/frameworks.html", apps=all_apps, error=error), 200
 
 
-@userland.route("/lists")
+@userland.route("/lists/")
 def prod_lists():
     lists = ro.lists.get_all_curator_lists(connect_database())
     projects_for_lists = {}
@@ -103,7 +103,17 @@ def prod_lists():
     return render_template("pages/lists.html", lists=lists, projects=projects_for_lists), 200
 
 
+<<<<<<< HEAD
 @userland.route("/apps/<string:project_id>")
+=======
+@userland.route("/search")
+def prod_search():
+    # FIXME: Implement this page.
+    abort(500)
+
+
+@userland.route("/apps/<string:project_id>/")
+>>>>>>> root
 def project_detail(project_id):
     app = ro.projects.get_project(connect_database(), project_id)
     if not app:
@@ -125,7 +135,7 @@ def project_detail(project_id):
         reviewer_name = reviewer_name), 200
 
 
-@userland.route("/apps/developer/<int:developer_id>")
+@userland.route("/apps/developer/<int:developer_id>/")
 def developer_detail(developer_id: int):
     developer = ro.accounts.get_account(connect_database(), developer_id)
     if not developer:
@@ -143,7 +153,7 @@ def add_project_review():
     request.form["comments"])
     return redirect(url_for("userland.project_detail", project_id = request.form['project_id']))
 
-@userland.route("/lists/<int:id>")
+@userland.route("/lists/<int:id>/")
 def list_detail(id: int):
     curated_list = ro.lists.get_one_list(connect_database(), str(id))
     projects = ro.lists.get_projects_from_list(connect_database(), str(id))
