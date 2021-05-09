@@ -1,0 +1,29 @@
+{#
+	User Account Settings
+	(C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+
+	This Source Code Form is subject to the terms of the Mozilla Public
+	License, v. 2.0. If a copy of the MPL was not distributed with this
+	file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#}
+{% extends "defaull.html" %}
+{% block title %}My account - Candella AppDB{% endblock %}
+{% block content %}
+<div class="p-strip--suru-topped is-branded">
+	<div class="row">
+		<h1>Howdy, {{ user.name }}.</h1>
+	</div>
+	<div class="row">
+		<h2>Account settings</h2>
+		{# TODO: Add HTML form here to adjust account settings.#}
+	</div>
+	<div class="row">
+		<h2>Delete your account</h2>
+		<p>
+			Deleting your account will remove all projects, reviews, and lists asssociated with your account.
+			This action is permanement and cannot be undone.
+		</p>
+		{# TODO: Add HTML form here to delete account with verification #}
+	</div>
+</div>
+{% endblock %}
