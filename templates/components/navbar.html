@@ -72,6 +72,9 @@
                         <li>
                             <a href="{{ url_for('curator.cur_dashboard') }}" class="p-subnav__item">Curator dashboard</a>
                         </li>
+                        <li>
+                            <a href="{{ url_for('userland.account_settings') }}" class="p-subnav__item">Manage</a>
+                        </li>
                         {% if not session.get("login_token") %}
                         <li>
                             <a href="{{ url_for('auth.auth_login') }}" class="p-subnav__item">Log in</a>
