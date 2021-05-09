@@ -1,0 +1,63 @@
+{#
+    Default HTML Template for Markdown-rendered Pages
+    (C) 2021 Marquis Kurt, Nodar Sotkilava, and Unscripted VN Team.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{% block title %}{{ title }} - Candella AppDB{% endblock %}</title>
+        {% include "components/imports.html" %}
+    </head>
+    <body>
+        <div class="l-site">
+            {% include "components/navbar.html" %}
+            <div class="p-strip--suru-topped">
+            <div class="row">
+                <div class="col-3">
+                    <div class="p-side-navigation " id="drawer">
+                      <a href="#drawer" class="p-side-navigation__toggle js-drawer-toggle" aria-controls="drawer">
+                        Toggle side navigation
+                      </a>
+
+                      <div class="p-side-navigation__overlay js-drawer-toggle" aria-controls="drawer"></div>
+
+                      <nav class="p-side-navigation__drawer" aria-label="Example side navigation">
+                        <div class="p-side-navigation__drawer-header">
+                          <a href="#" class="p-side-navigation__toggle--in-drawer js-drawer-toggle" aria-controls="drawer">
+                            Toggle side navigation
+                          </a>
+                        </div>
+
+                        <ul class="p-side-navigation__list">
+                          <li class="p-side-navigation__item--title">
+                            <a class="p-side-navigation__link" href="#">Documentation</a>
+                          </li>
+                          {% for doc in docs %}
+                          {% with doc_path = url_for('userland.documentation', page_name=doc) %}
+                          <li class="p-side-navigation__item" {% if doc_path == request.path %}aria-current="page"{% endif %}>
+                            <a class="p-side-navigation__link" href="{{ doc_path }}">
+                                {{ docs[doc] }}
+                            </a>
+                          </li>
+                          {% endwith %}
+                          {% endfor %}
+                        </ul>
+                      </nav>
+                    </div>
+                </div>
+            <div class="col-9">
+              {{ content }}
+            </div>
+        </div>
+        </div>
+    </body>
+    {% include "components/footer.html" %}
+    {% include "components/scripts.html" %}
+</html>

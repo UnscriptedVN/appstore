@@ -6,13 +6,13 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #}
-<footer>
+<footer class="l-footer--sticky">
     <div class="p-strip p-strip--light is-shallow">
         <div class="row">
             <p>&copy; <span id="appdb-f-date"></span> Candella project team.</p>
             <p>
-                <a href="#">Terms of service</a>
-                <a href="#">Privacy policy</a>
+                <a href="{{ url_for('userland.documentation', page_name='terms_of_service') }}">Terms of service</a>
+                <a href="{{ url_for('userland.documentation', page_name='privacy_policy') }}">Privacy policy</a>
                 <a class="p-link--external" href="https://github.com/UnscriptedVN/appstore">View the source</a>
                 <a class="p-link--external" href="https://discord.gg/CXxnVhX">Contact us</a>
             </p>

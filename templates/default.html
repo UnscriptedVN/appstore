@@ -15,10 +15,11 @@
         <title>{% block title %}Candella AppDB{% endblock %}</title>
         {% include "components/imports.html" %}
     </head>
-    {% include "components/navbar.html" %}
     <body>
-        {% block content %}
-        {% endblock %}
+        <div class="l-site">
+            {% include "components/navbar.html" %}
+            {% block content %}{% endblock %}
+        </div>
     </body>
     {% include "components/footer.html" %}
     {% include "components/scripts.html" %}
