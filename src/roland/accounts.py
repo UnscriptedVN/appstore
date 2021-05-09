@@ -73,3 +73,31 @@ def update_account_type(in_app_db, user_id, account_type=AccountType.UserAccount
         command = SQL("update Account set accountType = %s where userId = %s")
         cursor.execute(command, [account_type, user_id])
         in_app_db.commit()
+        
+def update_user_settings(in_app_db, user_id, email, name):
+    """Update the settings in the user account"""
+    with DatabaseContext(in_app_db) as cursor:
+        if email:
+            command = SQL("update Account set email = %s where userId = %s")
+            cursor.execute(command, [email, user_id])
+        if name: 
+            command = SQL("update Account set name = %s where userId = %s")
+            cursor.execute(command, [name, user_id])
+        in_app_db.commit()
+
+def delete_user(in_app_db, user_id, account_type):
+    #Not pretty but that's for future randy to worry about
+    """Delete the account and everything associated with it."""
+     with DatabaseContext(in_app_db) as cursor:
+        command = SQL("delete from Account where userId = %s")
+        cursor.execute(command, [user_id])
+        command = SQL("delete from (Project natural join Maintains) where userId = %s")
+        cursor.execute(command, [user_id])
+        command = SQL("delete from Reviews where userId = %s")
+        cursor.execute(command, [user_id])
+        if account_type == AccountType.Curator:
+            command = SQL("delete from List where userId = %s")
+            cursor.execute(command, [user_id])
+        #More to be added??
+        in_app_db.commit()
+        

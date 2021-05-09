@@ -137,6 +137,19 @@ def developer_detail(developer_id: int):
         connect_database(), developer["userid"])
     return render_template("pages/dev_detail.html", developer=developer, projects=projects_by_dev), 200
 
+@userland.route("/settings", methods=["GET", "POST"])
+def update_user_settings():
+    ro.accounts.update_user_settings(connect_database, session.get("cuid"), request.form["email"], request.form["name"])
+    return redirect(url_for("userland.index"))
+
+@userland.route("/delete",  methods=["GET", "POST"])
+def yeetus_deeletus_user():
+    if request.form["userid"] == session.get("cuid"):
+        acct = ro.accounts.get_account(connect_database(), session.get("cuid"))
+        ro.accounts.delete_user(connect_database(), session.get("cuid"), acct["accounttype"])
+        return redirect(url_for("userland.index"))
+    else abort(403)
+
 @userland.route("/projects/add-review", methods=["GET", "POST"])
 def add_project_review():
     ro.projects.post_review(connect_database(), session.get("cuid"), request.form["project_id"], request.form["rating"],
