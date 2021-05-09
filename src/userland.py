@@ -34,9 +34,9 @@ def index():
     #     return __database_failure()
     fconfig = frontpage_config()
     featured = ro.projects.get_project(
-        connect_database(), fconfig["featured_project"])
+        connect_database(), fconfig["featured_project"]) if "featured_project" in fconfig else None
     lists = [l for l in ro.lists.get_all_curator_lists(
-        connect_database()) if l["name"] in fconfig["featured_lists"]]
+        connect_database()) if l["name"] in fconfig["featured_lists"]] if "featured_lists" in fconfig else []
     l_projects = {l["listid"]: ro.lists.get_projects_from_list(
         connect_database(), l["listid"]) for l in lists}
     return render_template("pages/index.html", featured=featured, lists=lists, l_projs=l_projects), 200
