@@ -7,7 +7,7 @@
 
 from os import path, listdir
 from sys import stderr
-from flask import Blueprint, render_template, abort, jsonify, request, session, url_for, Markup, redirect
+from flask import Blueprint, render_template, abort, jsonify, request, session, url_for, Markup, redirect, current_app
 from commonmark import commonmark
 from . import roland as ro
 from .database import connect_database, frontpage_config
@@ -142,14 +142,6 @@ def update_user_settings():
     ro.accounts.update_user_settings(connect_database, session.get("cuid"), request.form["email"], request.form["name"])
     return redirect(url_for("userland.index"))
 
-@userland.route("/delete",  methods=["GET", "POST"])
-def yeetus_deeletus_user():
-    if request.form["userid"] == session.get("cuid"):
-        acct = ro.accounts.get_account(connect_database(), session.get("cuid"))
-        ro.accounts.delete_user(connect_database(), session.get("cuid"), acct["accounttype"])
-        return redirect(url_for("userland.index"))
-    else abort(403)
-
 @userland.route("/projects/add-review", methods=["GET", "POST"])
 def add_project_review():
     ro.projects.post_review(connect_database(), session.get("cuid"), request.form["project_id"], request.form["rating"],
@@ -163,3 +155,42 @@ def list_detail(id: int):
     curator = ro.accounts.get_account(
         connect_database(), curated_list["userid"])
     return render_template("pages/list_detail.html", list=curated_list, projects=projects, curator=curator), 200
+
+@userland.route("/account/settings")
+def account_settings():
+    if not session.get("cuid") or not session.get("login_token"):
+        abort(401)
+    user = ro.accounts.get_account(connect_database(), int(session.get("cuid")))
+    rxw_cid = current_app.config["GH_CLIENT_ID"]
+    return render_template("pages/userland/account.html", user=user, rxw_cid=rxw_cid), 200
+
+
+@userland.route("/account/update", methods=["GET", "POST"])
+def update_account():
+    if "userId" not in request.form:
+        abort(400)
+    if str(session.get("cuid")) != str(request.form["userId"]):
+        abort(403)
+    try:
+        ro.accounts.update_user_settings(
+            connect_database(), request.form["userId"], request.form["email"], request.form["name"])
+        return redirect(url_for('userland.account_settings'))
+    except Exception as error:
+        print(error, stderr)
+        abort(500)
+
+@userland.route("/account/delete", methods=["GET", "POST"])
+def yeetus_deeletus_user():
+    if "userId" not in request.form or "rxw_delete_confirm" not in request.form:
+        abort(400)
+    if request.form["rxw_delete_confirm"] != "I understand. Delete my account.":
+        abort(400, description='User did not confirm account deletion.')
+    if str(session.get("cuid")) != str(request.form["userId"]):
+        abort(403)
+    try:
+        ro.accounts.delete_user(
+            connect_database(), request.form["userId"], ro.accounts.AccountType(int(request.form["type"])))
+        return redirect(url_for('auth.auth_logout'))
+    except Exception as error:
+        print(error, stderr)
+        abort(500)

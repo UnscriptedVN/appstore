@@ -6,7 +6,7 @@
 	License, v. 2.0. If a copy of the MPL was not distributed with this
 	file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #}
-{% extends "defaull.html" %}
+{% extends "default.html" %}
 {% block title %}My account - Candella AppDB{% endblock %}
 {% block content %}
 <div class="p-strip--suru-topped is-branded">
@@ -14,16 +14,60 @@
 		<h1>Howdy, {{ user.name }}.</h1>
 	</div>
 	<div class="row">
-		<h2>Account settings</h2>
-		{# TODO: Add HTML form here to adjust account settings.#}
+		<div class="col-8">
+			<h2>Account settings</h2>
+			<form action="{{ url_for('userland.update_account') }}" method="POST">
+				<input hidden name="userId" value="{{ user.userid }}">
+				<label for="userName">Username</label>
+				<input type="text" name="name" placeholder="Foo Bar" value="{{ user.name }}">
+				<label for="userName">Public email address</label>
+				<input type="text" name="email" placeholder="example@email.com" value="{{ user.email }}">
+				<button type="submit" class="p-button--positive">Update account</button>
+			</form>
+		</div>
 	</div>
 	<div class="row">
-		<h2>Delete your account</h2>
+		<h3>Manage your GitHub data</h3>
 		<p>
-			Deleting your account will remove all projects, reviews, and lists asssociated with your account.
-			This action is permanement and cannot be undone.
+			Modify what Candella AppDB can access and, if necessary, revoke the access token to your GitHub
+			profile by managing the app's settings on GitHub.
 		</p>
-		{# TODO: Add HTML form here to delete account with verification #}
+		<p>
+			<a href="https://github.com/settings/connections/applications/{{ rxw_cid }}"
+				class="p-button p-link--external">Manage on GitHub</a>
+		</p>
 	</div>
+	<div class="row">
+		<div class="col-8">
+			<h2>Delete your account</h2>
+			<p>
+				Deleting your account will remove all projects, reviews, and lists asssociated with your account.
+				This action is permanement and cannot be undone.
+			</p>
+			<button class="p-button--negative" aria-controls="delete-modal">Delete account</button>
+		</div>
+	</div>
+</div>
+<div class="p-modal" id="delete-modal" style="display: none;">
+    <section class="p-modal__dialog" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-description">
+        <header class="p-modal__header">
+            <h2 class="p-modal__title" id="modal-title">Confirm delete</h2>
+            <button class="p-modal__close" aria-label="Close active modal" aria-controls="delete-modal">Close</button>
+        </header>
+        <p>
+        	Are you sure you want to delete your account? This action is permanent and cannot be undone.
+        	Please type <b>I understand. Delete my account.</b> in the textbox below to confirm this
+        	action.
+        </p>
+        <footer class="p-modal__footer">
+            <form action="{{ url_for('userland.yeetus_deeletus_user') }}" method="POST">
+                <input type="hidden" name="userId" value="{{ user.userid }}">
+                <input type="hidden" name="type" value="{{ user.accounttype }}">
+                <input type="text" name="rxw_delete_confirm" placeholder="I understand. Delete my account.">
+                <button type="reset" class="u-no-margin--bottom" aria-controls="delete-modal">Cancel</button>
+                <button type="submit" class="p-button--negative u-no-margin--bottom">Delete</button>
+            </form>
+        </footer>
+    </section>
 </div>
 {% endblock %}
