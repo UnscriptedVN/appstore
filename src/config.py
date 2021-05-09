@@ -7,7 +7,7 @@
 
 from os import getenv
 from dotenv import load_dotenv
-from json import load
+from json import load, loads
 
 load_dotenv(".env")
 
@@ -21,18 +21,23 @@ PSQL_HOST = getenv("PSQL_HOST")
 GH_CLIENT_ID = getenv("GH_CLIENT_ID")
 GH_CLIENT_SECRET = getenv("GH_CLIENT_SECRET")
 
+FRONTPAGE_CONFIG = {}
+
 # Frontpage configuration
 try:
     with open("frontpage.json", "r") as config_file:
         FRONTPAGE_CONFIG = load(config_file)
 except FileNotFoundError:
     print("No config file was found. Skipping config read.")
-    FRONTPAGE_CONFIG = {}
 
 if "featured_project" not in FRONTPAGE_CONFIG:
     FRONTPAGE_CONFIG["featured_project"] = None
 
 if "featured_lists" not in FRONTPAGE_CONFIG:
     FRONTPAGE_CONFIG["featured_lists"] = []
+
+if getenv("FRONTPAGE_CONFIG"):
+	print("FRONTPAGE_CONFIG detected in environment vars. Overriding.")
+	FRONTPAGE_CONFIG = loads(getenv("FRONTPAGE_CONFIG"))
 
 SECRET_KEY = "cnh3X2lkZW50aWZpZWRfY2VydGlmaWNhdGUK"
