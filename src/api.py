@@ -46,7 +46,7 @@ def api_project_releases(id: str):
     if not project:
         return jsonify({"error": "Record not found"}), 404
 
-    releases = ro.projects.get_releases(connect_database(), id)
+    releases = ro.projects.get_app_releases(connect_database(), id)
     return jsonify(releases)
 
 
@@ -60,12 +60,12 @@ def api_search():
     return ro.search.search(connect_database())
 
 
-@api.route("/users/<int:id>", methods=['GET'])
-def api_get_user(id: int):
-   account = ro.accounts.get_account(connect_database(), id)
-   if not account:
-       return jsonify({"error": "Record not found"}), 404
-   return jsonify(account)
+# @api.route("/users/<int:id>", methods=['GET'])
+# def api_get_user(id: int):
+#    account = ro.accounts.get_account(connect_database(), id)
+#    if not account:
+#        return jsonify({"error": "Record not found"}), 404
+#    return jsonify(account)
 
 
 @api.route("/lists", methods=["GET"])
