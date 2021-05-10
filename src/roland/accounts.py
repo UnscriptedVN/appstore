@@ -6,6 +6,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 from .utils import DatabaseContext
+from .projects import get_projects_by_developer
+from .editor import delete_project
 from psycopg2.extras import RealDictCursor, RealDictRow
 from psycopg2.sql import SQL
 from enum import IntEnum
@@ -73,3 +75,37 @@ def update_account_type(in_app_db, user_id, account_type=AccountType.UserAccount
         command = SQL("update Account set accountType = %s where userId = %s")
         cursor.execute(command, [account_type, user_id])
         in_app_db.commit()
+        
+def update_user_settings(in_app_db, user_id, email, name):
+    """Update the settings in the user account"""
+    with DatabaseContext(in_app_db) as cursor:
+        if email:
+            command = SQL("update Account set email = %s where userId = %s")
+            cursor.execute(command, [email, user_id])
+        if name: 
+            command = SQL("update Account set name = %s where userId = %s")
+            cursor.execute(command, [name, user_id])
+        in_app_db.commit()
+
+def delete_user(in_app_db, user_id, account_type):
+    """Delete the account and everything associated with it."""
+
+    # Delete the projects developed by this developer.
+    for project in get_projects_by_developer(in_app_db, user_id):
+        delete_project(in_app_db, project["id"])
+
+    with DatabaseContext(in_app_db) as cursor:
+        # Delete all the reviews the user has made.
+        command = SQL("delete from Reviews where userId = %s")
+        cursor.execute(command, [user_id])
+
+        # If the user is a curator, delete their curated lists.
+        if account_type == AccountType.Curator:
+            command = SQL("delete from List where userId = %s")
+            cursor.execute(command, [user_id])
+
+        # Finally, delete their account.
+        command = SQL("delete from Account where userId = %s")
+        cursor.execute(command, [user_id])
+        in_app_db.commit()
+        

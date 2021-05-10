@@ -50,6 +50,10 @@ def err_forbidden(e):
 def err_internal_server(e):
     return render_template("pages/error.html", errcode=500), 500
 
+@app.errorhandler(400)
+def err_internal_server(e):
+    return render_template("pages/error.html", errcode=400), 400
+
 
 if not app.config['DEBUG']:
     @app.errorhandler(Exception)
