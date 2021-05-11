@@ -40,12 +40,14 @@ def get_project_in_curator_list(in_app_db, project_id: str) -> dict:
         return cur.fetchall()
 
 def get_projects_from_list(in_app_db, list_id: str) -> list:
+    """Returns all the project in a given curated list"""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
         command = SQL("select * from (Project join Includes using (projectId)) where listId = %s")
         cursor.execute(command, [list_id])
         return [_transform_project_data(s, in_app_db) for s in cursor.fetchall()]
 
 def create_list(in_app_db, list_name: str, list_blurb: str, list_apps, with_curator: str):
+    """Creates a curator list"""
     projects = list_apps if list_apps else []
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
         spawner = SQL("insert into List (name, blurb, userId) values (%s, %s, %s)")
@@ -64,6 +66,7 @@ def create_list(in_app_db, list_name: str, list_blurb: str, list_apps, with_cura
         return new_id["listid"]
 
 def update_list(in_app_db, list_id, new_name, new_blurb):
+    """Updates the list with new metadata"""
     with DatabaseContext(in_app_db) as cursor:
         command = SQL("update List set name = %s, blurb = %s where listId = %s")
         cursor.execute(command, [new_name, new_blurb, list_id])
@@ -71,6 +74,7 @@ def update_list(in_app_db, list_id, new_name, new_blurb):
 
 
 def delete_list(in_app_db, list_id):
+    """Deletes a list"""
     projects_in_list = get_projects_from_list(in_app_db, list_id)
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
         for project in projects_in_list:

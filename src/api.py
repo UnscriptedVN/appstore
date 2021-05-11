@@ -34,6 +34,7 @@ def authenticate():
 
 @api.route("/projects/<string:id>", methods=["GET"])
 def api_single_project(id: str):
+    """API call to grab a single project."""
     project = ro.projects.get_project(connect_database(), id)
     if not project:
         return jsonify({"error": "Record not found"}), 404
@@ -42,6 +43,7 @@ def api_single_project(id: str):
 
 @api.route("/projects/<string:id>/releases", methods=['GET'])
 def api_project_releases(id: str):
+    """API call to grab all the releases for the given project"""
     project = ro.projects.get_project(connect_database(), id)
     if not project:
         return jsonify({"error": "Record not found"}), 404
@@ -57,6 +59,7 @@ def api_get_project():
 
 @api.route("/search", methods=["GET"])
 def api_search():
+    """API search but not yet implemented"""
     return ro.search.search(connect_database())
 
 
@@ -70,19 +73,23 @@ def api_search():
 
 @api.route("/lists", methods=["GET"])
 def api_get_all_lists():
+    """API call to grab all the lists"""
     return jsonify(ro.lists.get_all_curator_lists(connect_database()))
 
 
 @api.route("/lists/<string:id>", methods=['GET'])
 def api_single_list(id: str):
+    """API call to grab a single list"""
     return jsonify(ro.lists.get_one_list(connect_database(), id))
 
 
 @api.route("/lists/curator/<string:id>", methods=['GET'])
 def api_curator_lists(id: str):
+    """API call to grab a Curator's list"""
     return jsonify(ro.lists.get_curator_lists(connect_database(), id))
 
 
 @api.route("/lists/project/<string:id>", methods=['GET'])
 def api_get_project_in_curator_list(id: str):
+    """API call to get a project in a curated list"""
     return jsonify(ro.lists.get_project_in_curator_list(connect_database(), id))

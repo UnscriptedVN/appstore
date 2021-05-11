@@ -72,6 +72,7 @@ def get_app_releases(in_app_db, project_id: str) -> list:
         return [releases.transform_release_row(row) for row in cur.fetchall()]
 
 def get_screenshots(in_app_db, project_id: str) -> list:
+    """Returns all the screenshots url for a given project"""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
         comm = SQL("select screenUrl from Screenshot where projectId = %s")
         cur.execute(comm, [project_id])
@@ -111,12 +112,14 @@ def get_project_license(in_app_db, license_id) -> Optional[str]:
     return licensing.get_project_license(in_app_db, license_id)
 
 def get_project_permissions(in_app_db, project_id: str) -> list:
+    """Gets all the permisions for the given Project"""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
         command = SQL("select requiredKey from Requires where projectId = %s")
         cursor.execute(command, [project_id])
         return [req["requiredkey"] for req in cursor.fetchall()]
 
 def get_permission(in_app_db, perm: str) -> dict:
+    """Returns the permissions for a given required key associated with a project"""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
         command = SQL("select * from Permission where requiredKey = %s")
         cursor.execute(command, [perm])
@@ -133,6 +136,7 @@ def get_projects_by_developer(in_app_db, userId: str) -> list:
         return projects
 
 def get_developer(in_app_db, of_project_id: str) -> dict:
+    """Returns the developer of the project"""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
         command = SQL("select userId, name from (Maintains natural join Account) where projectId = %s")
         cursor.execute(command, [of_project_id])

@@ -52,6 +52,7 @@ def get_account(in_app_db, userId: int) -> dict:
 
 
 def get_account_by_github_id(in_app_db, gh_id: str) -> Optional[RealDictRow]:
+    """Gets an account for a given GitHub ID"""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cur:
         comm = SQL("select * from Account where githubId = %s")
         cur.execute(comm, [str(gh_id)])

@@ -27,6 +27,8 @@ def __verify_developer():
 
 @developer.route("/dashboard/")
 def dev_dashboard():
+    """Renders a dashboard for the Developer including their projects."""
+
     acct = __verify_developer()
     dev_projects = ro.projects.get_projects_by_developer(connect_database(), acct["userid"])
     return render_template("pages/developer/dashboard.html", developer=acct, projects=dev_projects, action="manage"), 200
@@ -38,6 +40,8 @@ def create_project():
 
 @developer.route("/projects/new", methods=["GET", "POST"])
 def create_project_request():
+    """API endpoint for the developer to make a new project."""
+
     __verify_developer()
     if not request.form:
         abort(400)
@@ -56,6 +60,8 @@ def create_project_request():
 @developer.route("/projects/<string:id>/")
 @developer.route("/projects/<string:id>/info/")
 def edit_project(id: str):
+    """Renders basic information about the project such as license."""
+
     project = ro.projects.get_project(connect_database(), id)
     licenses = ro.licensing.get_all_licenses(connect_database())
     if not project:
@@ -65,6 +71,8 @@ def edit_project(id: str):
 
 @developer.route("/projects/<string:id>/releases/")
 def edit_project_releases(id: str):
+    """Renders all the releases for the project. And submit a new release for review."""
+
     project = ro.projects.get_project(connect_database(), id)
     previous_releases = ro.projects.get_app_releases(connect_database(), id)
     if not project:
@@ -73,6 +81,8 @@ def edit_project_releases(id: str):
 
 @developer.route("/projects/<string:id>/messages/")
 def edit_project_messages(id: str):
+    """Renders all the Action Center messages for a given project."""
+
     project = ro.projects.get_project(connect_database(), id)
     if not project:
         abort(500)
@@ -82,6 +92,8 @@ def edit_project_messages(id: str):
 
 @developer.route("/projects/<string:id>/reviews/")
 def edit_project_reviews(id: str):
+    """Renders all the reviews for a given project."""
+
     project = ro.projects.get_project(connect_database(), id)
     if not project:
         abort(500)
@@ -94,6 +106,7 @@ def edit_project_reviews(id: str):
 
 @developer.route("/projects/update_information", methods=["GET", "POST"])
 def update_project_information():
+    """API endpoint that updates the project's metadata."""
     __verify_developer()
     if not request.form:
         abort(400)
@@ -117,6 +130,7 @@ def update_project_information():
 
 @developer.route("/projects/update_permissions", methods=["GET", "POST"])
 def update_project_permissions():
+    """API endpoint that updates the project's permissions."""
     __verify_developer()
     if not request.form:
         abort(400)
@@ -136,6 +150,7 @@ def update_project_permissions():
 
 @developer.route("/projects/create_release", methods=["GET", "POST"])
 def create_release_request():
+    """API endpoint that creates a new release for a project."""
     __verify_developer()
     if not request.form or 'id' not in request.form:
         abort(400)
@@ -154,6 +169,7 @@ def create_release_request():
 
 @developer.route("/projects/delete", methods=["GET", "POST"])
 def delete_project():
+    """API endpoint that deletes a project."""
     __verify_developer()
     if not request.form or 'id' not in request.form:
         abort(400)

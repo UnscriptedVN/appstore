@@ -118,6 +118,7 @@ def update_project_permissions(in_app_db, project_id: str, added, removed):
 
 
 def delete_project(in_app_db, project_id: str):
+    """Delete a project"""
     with DatabaseContext(in_app_db) as cursor:
         # Delete any Action Center messages with this project.
         delete_messages = SQL("delete from Message where projectId = %s")

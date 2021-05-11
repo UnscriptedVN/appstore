@@ -12,6 +12,7 @@ from .utils import DatabaseContext
 
 
 def get_project_license(in_app_db, license_id) -> Optional[str]:
+    """Returns a license for an associated license id"""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
         command = SQL("select licenseName from License where licenseId = %s")
         cursor.execute(command, [license_id])

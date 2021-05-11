@@ -22,6 +22,7 @@ def _verify_curator():
 
 @curator.route("/dashboard/")
 def cur_dashboard():
+    """Renders the Curator's dashboard and if they have any Releases waiting for review."""
     #Future TODO: Implement dynamic way to assign pending release to a curator
     account = _verify_curator()
     pending_release = ro.releases.get_pending_releases(connect_database())
@@ -34,6 +35,7 @@ def cur_dashboard():
 
 @curator.route("/lists/")
 def lists_dashboard():
+    """Renders the curated lists for the Curator where they can manage and create lists"""
     _verify_curator()
     cur_lists = ro.lists.get_curator_lists(connect_database(), session.get("cuid"))
     apps = {}
@@ -43,12 +45,14 @@ def lists_dashboard():
 
 @curator.route("/lists/create/")
 def create_list():
+    """Renders a creation wizard for curated lists"""
     _verify_curator()
     all_apps = ro.projects.list_projects(connect_database())
     return render_template("pages/curator/wizard.html", projects=all_apps), 200
 
 @curator.route("/lists/add", methods=["GET", "POST"])
 def create_list_request():
+    """API endpoint that adds a list"""
     _verify_curator()
     all_projects_for_list = request.form.getlist("projects") if "projects" in request.form else None
     list_id = ro.lists.create_list(
@@ -60,11 +64,13 @@ def create_list_request():
 
 @curator.route("/lists/<int:list_id>/manage/")
 def manage_list(list_id: int):
+    """Renders a list manager for the specified list"""
     edited_list = ro.lists.get_one_list(connect_database(), str(list_id))
     return render_template("pages/curator/list_manager.html", list=edited_list), 200
 
 @curator.route("/lists/update", methods=["GET", "POST"])
 def update_list_request():
+    """API endpoint that updates the list with new metadata."""
     _verify_curator()
     try:
         ro.lists.update_list(connect_database(), request.form["id"], request.form["name"], request.form["blurb"])
@@ -75,6 +81,7 @@ def update_list_request():
 
 @curator.route("/lists/delete", methods=["GET", "POST"])
 def delete_list_request():
+    """API endpoint that deletes a list."""
     _verify_curator()
     try:
         ro.lists.delete_list(connect_database(), request.form["id"])
@@ -85,6 +92,7 @@ def delete_list_request():
 
 @curator.route("/projects/<string:id>/inspect/")
 def inspect_project(id: str):
+    """Renders an inspection manager for the Curtator for a given Release where they are able to approve it or reject it."""
     _verify_curator()
     project = ro.projects.get_project(connect_database(), id)
     release = ro.releases.get_release(connect_database(), id)
@@ -97,6 +105,7 @@ def inspect_project(id: str):
 
 @curator.route("/projects/<string:id>/approve", methods = ["GET","POST"])
 def approve_release(id: str):
+    """API endpoint that approves the Release."""
     _verify_curator()
     release = ro.releases.get_release(connect_database(), id)
     if (session.get("cuid") == release[0]["userid"]):
@@ -107,6 +116,7 @@ def approve_release(id: str):
 
 @curator.route("/projects/reject", methods = ["GET","POST"])
 def reject_release():
+    """API endpoint that rejects the Release."""
     _verify_curator()
     release = ro.releases.get_release(connect_database(), request.form["projectId"])
     if (session.get("cuid") == release[0]["userid"]):

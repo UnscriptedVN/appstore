@@ -30,6 +30,11 @@ def _retrieve_docs_list():
 
 @userland.route("/")
 def index():
+    """Renders the custom homepage as provided by the administrator.
+    
+    For environments where providing a json file is not feasible, admins can supply FRONTPAGE_CONFIG to hange 
+        customization.
+    """
     # if not connect_database():
     #     return __database_failure()
     fconfig = frontpage_config()
@@ -44,6 +49,8 @@ def index():
 
 @userland.route("/docs/<string:page_name>/")
 def documentation(page_name: str):
+    """Support for documentation pages provided in Markdown are rendered safely according to Commonmark specification."""
+
     if not path.isfile(f"pages/{page_name}.md"):
         abort(404)
     with open(f"pages/{page_name}.md", 'r') as pagefile:
@@ -56,6 +63,8 @@ def documentation(page_name: str):
 
 @userland.route("/apps/")
 def prod_apps():
+    """Renders a page of all the projects that are type App"""
+
     try:
         all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
                                              ro.projects.ProjectType.App])
@@ -69,6 +78,8 @@ def prod_apps():
 
 @userland.route("/services/")
 def services_list():
+    """Renders a page of all the projects that are type Services"""
+
     try:
         all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
                                              ro.projects.ProjectType.CoreService])
@@ -82,6 +93,8 @@ def services_list():
 
 @userland.route("/frameworks/")
 def frameworks_list():
+    """Renders a page of all the projects that are type Framework"""
+
     try:
         all_apps = ro.projects.list_projects(connect_database(), filter_by_type=[
                                              ro.projects.ProjectType.Framework])
@@ -95,6 +108,8 @@ def frameworks_list():
 
 @userland.route("/lists/")
 def prod_lists():
+    """Renders the curated lists provided by Curators to the User"""
+
     lists = ro.lists.get_all_curator_lists(connect_database())
     projects_for_lists = {}
     for list in lists:
@@ -105,6 +120,11 @@ def prod_lists():
 
 @userland.route("/apps/<string:project_id>/")
 def project_detail(project_id):
+    """Renders a detailed page of project with a given project_id.
+    
+        Page includes download link, summary of the project, user reviews, and permisions.
+    """
+
     app = ro.projects.get_project(connect_database(), project_id)
     if not app:
         abort(404)
@@ -127,6 +147,8 @@ def project_detail(project_id):
 
 @userland.route("/apps/developer/<int:developer_id>/")
 def developer_detail(developer_id: int):
+    """Renders a page of all the projects made by the specified developer."""
+
     developer = ro.accounts.get_account(connect_database(), developer_id)
     if not developer:
         abort(404)
@@ -139,12 +161,19 @@ def developer_detail(developer_id: int):
 
 @userland.route("/projects/add-review", methods=["GET", "POST"])
 def add_project_review():
+    """API endpoint to add a user review to the project.
+    
+        Users are then redirected to the project page.
+    """
+
     ro.projects.post_review(connect_database(), session.get("cuid"), request.form["project_id"], request.form["rating"],
     request.form["comments"])
     return redirect(url_for("userland.project_detail", project_id = request.form['project_id']))
 
 @userland.route("/lists/<int:id>/")
 def list_detail(id: int):
+    """Renders a detailed view of the curated list, including all the projects in it"""
+
     curated_list = ro.lists.get_one_list(connect_database(), str(id))
     projects = ro.lists.get_projects_from_list(connect_database(), str(id))
     curator = ro.accounts.get_account(
@@ -153,6 +182,11 @@ def list_detail(id: int):
 
 @userland.route("/account/settings")
 def account_settings():
+    """Renders a page for Users to manage their account.
+    
+        Users are able to change their name and email, manage GitHub Data and delete their account
+    """
+
     if not session.get("cuid") or not session.get("login_token"):
         abort(401)
     user = ro.accounts.get_account(connect_database(), int(session.get("cuid")))
@@ -162,6 +196,8 @@ def account_settings():
 
 @userland.route("/account/update", methods=["GET", "POST"])
 def update_account():
+    """API endpoint that updates the User's name and/or email in the DB."""
+
     if "userId" not in request.form:
         abort(400)
     if str(session.get("cuid")) != str(request.form["userId"]):
@@ -176,6 +212,8 @@ def update_account():
 
 @userland.route("/account/delete", methods=["GET", "POST"])
 def yeetus_deeletus_user():
+    """As the function name implies, API endpoint that deletes that User's account."""
+    
     if "userId" not in request.form or "rxw_delete_confirm" not in request.form:
         abort(400)
     if request.form["rxw_delete_confirm"] != "I understand. Delete my account.":

@@ -18,12 +18,14 @@ class ReleaseStatus(IntEnum):
 
 
 def get_pending_releases(in_app_db) -> dict:
+    """Returns a dictionary of all Releases awaiting review."""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
         command = SQL("select * from Release where inspectStatus = %s")
         cursor.execute(command, [ReleaseStatus.PendingReview.value])
         return cursor.fetchall()
 
 def transform_release_row(release_row: RealDictRow) -> RealDictRow:
+    """Transforms the metadata of a release so that it's easier to read."""
     api_mode = release_row.copy()
     api_mode["download"] = api_mode["downloadurl"]
     api_mode["release_date"] = api_mode["inspectdate"]
@@ -33,6 +35,7 @@ def transform_release_row(release_row: RealDictRow) -> RealDictRow:
 
 
 def create_release(in_app_db, project_id: str, version: str, download: str, notes: str, developer_id):
+    """Creates a new Release"""
     with DatabaseContext(in_app_db) as cursor:
         command = SQL(
             "insert into Release (version, notes, downloadUrl, projectId, inspectStatus, userId) values (%s, %s, %s, %s, %s, %s)")
