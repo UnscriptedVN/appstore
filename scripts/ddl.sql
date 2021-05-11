@@ -88,13 +88,14 @@ create table if not exists Includes(
 
 create table if not exists Release (
     -- Add a trigger to make sure Curator approved this
-    version text primary key,
+    version text,
     notes text,
     downloadUrl text,
     projectId text,
     inspectDate timestamp with time zone,
     inspectStatus integer check (inspectStatus > -1 and inspectStatus < 3),
     userId serial,
+    primary key (projectId, version),
     foreign key (projectId) references Project,
     foreign key (userid) references Account
 );
@@ -106,8 +107,7 @@ create table if not exists Message (
 	version text,
 	content text,
 	foreign key (userId) references Account,
-	foreign key (projectId) references Project,
-	foreign key (version) references Release
+	foreign key (projectId, version) references Release
 );
 
 create table if not exists DependsOn(
