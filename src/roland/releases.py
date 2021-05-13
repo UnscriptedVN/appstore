@@ -10,7 +10,6 @@ from psycopg2.sql import SQL
 from psycopg2.extras import RealDictCursor, RealDictRow
 from random import shuffle
 from .utils import DatabaseContext
-from .accounts import AccountType
 
 class ReleaseStatus(IntEnum):
     """An enumeration representing the different release status codes."""
@@ -22,7 +21,7 @@ def __get_random_curator(in_app_db, excluding_id=None) -> int:
     """Returns a random user ID that corresponds to a curator."""
     with DatabaseContext(in_app_db, cursor_factory=RealDictCursor) as cursor:
         command = SQL("select userId from Account where accountType = %s")
-        cursor.execute(command, [AccountType.Curator])
+        cursor.execute(command, [2])
         ids = [int(row["userid"]) for row in cursor.fetchall() if int(row["userid"]) != excluding_id]
         shuffle(ids)
         return ids[0] if len(ids) > 0 else -1
