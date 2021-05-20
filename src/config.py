@@ -40,4 +40,4 @@ if getenv("FRONTPAGE_CONFIG"):
 	print("FRONTPAGE_CONFIG detected in environment vars. Overriding.")
 	FRONTPAGE_CONFIG = loads(getenv("FRONTPAGE_CONFIG"))
 
-SECRET_KEY = "cnh3X2lkZW50aWZpZWRfY2VydGlmaWNhdGUK"
+SECRET_KEY = getenv("FLASK_SECRET")
